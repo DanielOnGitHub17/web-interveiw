@@ -1,0 +1,466 @@
+<!doctype html>
+<html>
+    <head>
+        <title>AI interview</title>
+        <style>
+            body{
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    margin-top: 0px;
+}
+body>div{
+    border: 2px solid blue;
+    display: flex; flex-flow: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    margin: 20px;
+}
+body>div>*:not(p){
+    list-style: none;
+    padding: 5px 15px;
+    margin: 20px 20px;
+    border: 1px solid blue;
+    width: 100%;
+}
+#setupdesc{
+    box-sizing: border-box;
+    padding: 5px 25px; width: 100%;
+}
+#addquestion, .upanddown{
+    float: right;
+}
+#questionslist{
+    border: none;
+}
+#setup{display: nne}
+li, label{
+    border: thin solid blue;
+    margin-bottom: 10px;
+    display: flex;
+    gap: 10px; padding: 10px 15px;
+    padding-right: ;
+    background: aliceblue;
+    align-items: center;
+    justify-content: space-evenly;
+}
+#voicechoices{
+    display: flex;
+    padding: 5px; margin: 10px;
+    border: 1px solid blue;
+}
+#shouldusevideo{scale: 3}
+#setup #ondout{margin: ;padding: 10px 5px}
+#voicechoices>label{
+    align-self: end; 
+}
+#voicechoices input{
+    scale: 1.5; border: 1px solid blue;
+}
+#voiceschoices h4{align-self: }
+button{
+    background: #0078d4;
+    color: white; border-color: aliceblue;
+    width: 40px; height: 40px; cursor: pointer
+}
+button:hover{
+    background: blue
+}
+button:active{
+    background: #0019a1
+}
+button:focus{
+    border-color: #bcdbf4;
+    outline-color: gray;
+}
+.upanddown{
+/*     position: absolute; */
+    display: flex;
+    flex-flow: column;
+}
+.upanddown>button{
+    width: 30px; height: 20px
+}
+span, #questionslist input{
+    padding: 5px;
+    background: #0000000a;
+    border: 1px dotted;
+}
+.question{
+    border: none;/* width: -webkit-fill-available;*/
+    border-bottom: 1px solid blue;
+    width: 40vw; text-overflow: ellipsis; overflow: hidden;
+    height: 1em;
+}
+.question:focus{
+     outline: 1px solid blue
+}
+#startbutton{
+    width: 70%;
+}
+
+/* interview */
+#embassy{
+    width: -webkit-fill-available;
+    padding: 30px
+}
+#you{
+    display: flex;
+    flex-flow: column;
+    width: 100%; align-items: center;
+    justify-content: center;
+}
+/* #setup{display: none;} */
+#embassy{display: none}
+#you>*{
+    border: 1px solid blue;
+    width: 100%; margin: 5px; padding: 10px 7px;
+}
+#answerbox{
+    font-size: 1.3em; color: darkblue
+}
+
+video{
+    width: 70vw; height: 70vh;
+}
+#interviewbox{
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+}
+#controls>*{
+    width: fit-content;
+}
+table{
+    border: 2px solid blue; padding: 20px;
+}
+td, th{
+    border: 1px solid blue; padding: 10px;
+    margin: 3px;
+}
+th{color: darkblue; text-align: -webkit-auto;}
+[disabled]{filter: grayscale(1)}
+#responseHolder, #refresher, #responses{display: none;}
+#respdesc{
+   color: #0055bc; font-size: 1.3em; text-align: center;
+}
+#errors{color: red}
+#refresher{width: fit-content; text-transform: uppercase}
+@meda screen and (max-width: 980px){
+    body{
+        font-size: 2em
+    }
+    button{font-size: 1em; height: fit-content}
+}
+
+    /* loading */
+#loading, #loading:before{
+    width: 80px;
+    height: 80px;
+    border: none;
+    position: fixed;
+/*     display: none; */
+    top: calc(50vh - 40px);
+    left: calc(50vw - 40px); z-index: 199;
+    margin: 0;
+}
+#loading:before{
+    content: '';
+    width: 1000%; height: 1000%;
+    top: 0; left: 0; border-radius: 0;
+    background: rgb(0 0 0 / 60%);
+}
+body #loading>div{
+    width: 20px; height: 20px; border: none; background: white;
+    top: 0; left: calc(50% - 10px);var(--x); position: absolute;
+animation: blink 1s cubic-bezier(0, 0, 1, -0.12) infinite;
+    opacity: 0; z-index: 200; border-radius: 40px;
+        padding: 0; margin: 0;
+}
+@-webkit-keyframes blink{
+    0%{opacity: 1}
+    50%{opacity: 0}
+}
+#c0{transform: translate(0px, 0px);}
+#c1{transform: translate(20px, 11px);}
+#c2{transform: translate(30px, 30px)}
+#c3{transform: translate(20px, 50px)}
+#c4{transform: translate(0px, 60px)}
+#c5{transform: translate(-20px, 50px)}
+#c6{transform: translate(-30px, 30px)}
+#c7{transform: translate(-20px, 11px);}
+/* end loading */
+        </style>
+    </head>
+    <body>
+        <h2>AI interview</h2>
+        <div id=setup>
+            <div id=setupdesc>
+                <span>Questions the AI should ask you</span>
+                <button id=addquestion>+</button>
+            </div>
+            <ul id=questionslist></ul>
+            <div id=voicechoices>
+                <h4>Choose Voice: </h4>
+                <label>David<input type=radio checked name=voice value=0></label>
+                <label>Mark<input type=radio name=voice value=1></label>
+                <label>Zira<input type=radio name=voice value=2></label>
+            </div>
+            <label id='ondout'>Use Video? <input type=checkbox id=shouldusevideo checked></label>
+            <p id=errors></p>
+            <button id=startbutton>START</button>
+        </div>
+        <div id=embassy>
+            <div id=interviewbox>
+                <video id=video src></video>
+                <div id=controls>
+                    <button id=playorpause>Pause Recording</button>
+                    <button id=say>Repeat</button>
+                    <button id=forward>Forward</button>
+                </div>
+                <div id=loading src hidden></div>
+            </div>
+            <form id=you>
+                <p id=questionbox></p>
+                <textarea id=answerbox required></textarea>
+                <button id=answerquestion>ANSWER</button>
+            </form>
+        </div>
+        <table id=responses>
+            <tr><td id=respdesc colspan=2>Your Responses</td></tr>
+            <tr>
+                <th>Questions</th>
+                <th>Answers</th>
+            </tr>
+        </table>
+        <div id=responseHolder>
+            <video id=response controls></video>
+            <button id=save>SAVE VIDEO</button>
+        </div>
+        <script id='funcs.js'>
+            //make, get, identify, getall, randbtw
+            let make= (name='div')=>document.createElement(name),
+            get=(id)=>document.getElementById(id),
+            getE=(selector, value)=>document.querySelector(`[${selector}=${value}]`),
+            getS=(query)=>document.querySelector(query),
+            getAll=(query)=>[...document.querySelectorAll(query)];
+            let identify=()=>getAll('[id]').forEach(i=>window[i.id]=i),
+                add=(what, to=document.body)=>to.appendChild(what),
+                bx = (who)=>who.getBoundingClientRect();
+
+            function randBtw(x=0, y=0, prec=0){
+                let n = `${(y-x+1)*Math.random()+x}`;
+                let s = n.split('.'),
+                N = s[0]+s[1].slice(0, prec)
+                return Number(N)
+            }
+        </script>
+        <script id='script.js'>
+            identify()
+function makeQuestion(question, index) {
+    let questionHolder = make('li');
+    [['span', 'questionnumber', index], ['span', 'question', question],
+     ['button', 'removebutton', 'X'], ['div', 'upanddown']].forEach(e=>{
+         questionHolder.appendChild((questionHolder[e[1]]=make(e[0]))).className=e[1];
+         questionHolder[e[1]].textContent=e[2];
+         //appendChild would return the element so you can add a className
+     });
+    [['up', '/\\'], ['down', '\\/']].forEach((a)=>{
+        questionHolder.upanddown
+        .appendChild(questionHolder[a[0]]=make('button')).className=a[0];
+        questionHolder[a[0]].textContent=a[1]
+    });
+    questionHolder.question.contentEditable=true;//make contentEditable
+    questionslist.append(questionHolder);//add to DOM
+    //start filling in
+    questionHolder.questionnumber.textContent=index;
+    questionHolder.question.value=question;
+    //events
+    questionHolder.removebutton.onclick=()=>questionHolder.remove();//for deleting the question
+    questionHolder.upanddown.onclick=()=>{
+        if (event.target.parentElement!=questionHolder.upanddown)return;//so that I can use ternary ifelse
+        let dir = event.target.className;
+        (event.target.className=='up')
+        ?(questionslist.firstElementChild!=questionHolder)
+            &&questionslist
+            .insertBefore(questionHolder, questionHolder.previousElementSibling)
+        :(questionslist.lastElementChild!=questionHolder)
+            &&((questionslist.lastElementChild
+                .previousElementSibling==questionHolder)
+              ?questionslist.appendChild(questionHolder)
+               :questionslist.insertBefore(questionHolder
+                , questionHolder.nextElementSibling.nextElementSibling)
+              )
+    };
+    questionHolder.onclick=()=>questionslist.querySelectorAll('.questionnumber').forEach((n, i)=>n.textContent=i+1);
+    questionHolder.question.focus()
+}
+(function loader(){
+    window.loading = make(); loading.id = 'loading';
+    for (let n = 0; n<8; n++){
+        let c = make(); c.id = 'c'+n;
+        c.style.animationDelay = n/8+'s';
+//         use other numbers appart from .125 to see effects;
+        loading.appendChild(c); loading.hidden = 1;
+    }
+    document.body.appendChild(loading);
+})();
+Object.defineProperty(loading, 'loading', {
+    set: function (b) {
+        eval(b)?document.body.appendChild(loading):loading.remove();
+    },
+    get: function () {
+        return loading.isConnected;
+    }
+})
+        </script>
+        <script id='events.js'>
+            //all functions and variables if (except all event based) here
+onbeforeunload=()=>{
+    speechSynthesis.cancel();
+    localStorage.questions = JSON.stringify([...questionslist.children].map(i=>i.querySelector('.question').innerText));
+}
+addquestion.onclick=()=>{
+    makeQuestion('Write a question here, write a question here', questionslist.childElementCount+1)
+}
+startbutton.onclick=()=>{
+    if (!(questions=[...questionslist.children].map(i=>i.querySelector('.question').innerText)).length) return errors.innerHTML = 'No question added, Please add at least <i>one</i> questions to proceed';
+    if (!confirm('Proceed?')) return
+    embassy.style.display='flex'; setup.style.display='none';
+    shouldusevideo.checked?you.style.display='none':interviewbox.style.display='none';
+    questionbox.innerText=(currentQuestion=questions[index])//setup non-video
+    if (!shouldusevideo.checked) return;
+    // while (!voice){}
+    loading.loading = 1;
+    userMedia = navigator.mediaDevices.getUserMedia({
+        audio: true, video: true,
+        facingMode: {exact: "user"}
+    });
+    userMedia.then(mediaStream=>{
+        //setup video recording
+        stream = mediaStream;
+        recorder = new MediaRecorder(mediaStream)
+        recorder.ondataavailable=()=>{
+            loading.loading = 1;
+            finalFile = new Blob([event.data], {type:"video/mp4"})
+            response.src=URL.createObjectURL(finalFile);
+            refresher.style.display='block';
+            responseHolder.style.display='flex';
+            loading.loading = 0;
+        }
+        recorder.start();
+        video.srcObject = mediaStream; video.muted=true;        
+    }).catch(error=>{alert(`an error occurred (${error}), exitting!!`);location.reload()})
+    video.onloadstart=()=>{
+        loading.loading=0;
+        video.play();
+        let hours = new Date(Date.now()).getHours(), time;
+        if(hours>16){
+            time ='evening'
+        }else if(hours>11){
+            time='afternoon'
+        }else if(hours>0){
+            time='morning'
+        }
+        question = new SpeechSynthesisUtterance(`
+        Good ${time}}. Welcome to your interview.
+        Please click the repeat button to repeat any asked question,
+        and click the forward button to go to the next question.`);
+        question.voice =voice//= voices[+getAll('[name=voice]').filter(v=>v.checked)[0].value]
+         voice; question.rate=.8;
+        speechSynthesis.speak(question);
+        question.onstart=()=>say.disabled=forward.disabled=true;
+        question.onend = ()=>{setTimeout(()=>!video.paused&&(say.disabled=forward.disabled=false), randBtw(1000, 2500))};
+        // setup q and a
+    }
+    
+}
+answerquestion.onclick=()=>{
+    event.preventDefault();
+    if (!answerbox.reportValidity()) return;
+    answers.push(answerbox.value); answerbox.value='';
+    if(index+1>=questions.length){
+        //submit
+        embassy.style.display='none'
+        responses.style.display='flex';
+        questions.forEach((q, i)=>{
+            let r = responses.insertRow();
+            (r.insertCell()).innerText = q;
+            (r.insertCell()).innerText = answers[i]
+        })
+        return refresher.style.display='block'
+    }
+    questionbox.innerText=(currentQuestion = questions[++index])
+    if(index+2>questions.length) answerquestion.innerText='End interview';
+}
+playorpause.onclick=()=>{
+    if (video.paused) {
+        speechSynthesis.resume(); recorder.resume(); video.play(); playorpause.innerText = 'Pause Recording';
+        say.disabled=forward.disabled=false;
+    } else {
+        speechSynthesis.pause(); recorder.pause(); video.pause();playorpause.innerText = 'Continue Recording';
+        question.onstart();
+    }
+}
+forward.onclick=()=>{
+    question.onstart();
+    if(index>=questions.length){
+        //submit
+        question.text = [`Every thing looks good,
+        I will be approving your visa, take this paper, it will tell you what to do`
+        ,`Congratulations, your visa has been approved. Follow the steps on this white paper to get your passport`
+        ][randBtw(0,1)]
+        speechSynthesis.speak(question)
+        question.onend=()=>{
+            embassy.style.display='none'
+            stream.getTracks().forEach(i=>i.stop());
+            recorder.stop();
+        }
+        return
+    }
+    question.text=(currentQuestion=questions[index++]);
+    speechSynthesis.speak(question)
+    if(index+1>questions.length) forward.innerText='End interview';
+}
+say.onclick=()=>{
+    speechSynthesis.cancel();
+    speechSynthesis.speak(question);
+}
+// addquestion.click()
+//for downloading
+save.onclick=()=>{
+    downloader.href=response.src;
+    downloader.click();
+}
+getAll('[name=voice]').forEach(v=>{
+    v.onchange=()=>{voice=speechSynthesis.getVoices()[+v.value]}
+})
+        </script>
+        <script id='setup.js'>
+            //start from the top
+// first get the saved questions if any
+let baseli = getS('li'),//the base for adding questions
+ questions = localStorage.questions&&JSON.parse(localStorage.questions),
+    currentQueston, index=0, answers=[], userMedia
+ , recorder,
+    stream, voices = speechSynthesis.getVoices(), voice, question, downloader=make('a');
+downloader.download='interview.mp4';
+if (questions) {
+    questions.forEach((q, i)=>{makeQuestion(q, 1+i)})
+}
+function mov(){
+    
+p.then(mediaStream=>{
+    m = MediaRecorder;
+    video.onloadedmetadata = (x)=>{confirm('play?')&&video.play(); a.push(x)}
+    MediaRecorder.start();
+});
+
+p.catch(err=>console.log(err))}
+// startbutton.onclick = mov
+loading.loading=0;
+        </script>
+        <button id=refresher onclick='location.reload()'>Restart</button>
+    </body>
+</html>
