@@ -19,6 +19,7 @@ startbutton.onclick=()=>{
         audio: true, video: true,
         facingMode: {exact: "user"}
     });
+    // use transform scale(-1) on a container containing the video. 
     userMedia.then(mediaStream=>{
         //setup video recording
         stream = mediaStream;
