@@ -1,8 +1,14 @@
 identify()
+class Question{
+    constructor(question){
+        this.question = question;
+        this.build()
+    }
+}
 function makeQuestion(question, index) {
     let questionHolder = make('li');
-    [['span', 'questionnumber', index], ['span', 'question', question],
-     ['button', 'removebutton', 'X'], ['div', 'upanddown']].forEach(e=>{
+    [['span', 'question', question],
+     ['button', 'removebutton', 'X']].forEach(e=>{
          questionHolder.appendChild((questionHolder[e[1]]=make(e[0]))).className=e[1];
          questionHolder[e[1]].textContent=e[2];
          //appendChild would return the element so you can add a className

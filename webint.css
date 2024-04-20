@@ -1,0 +1,89 @@
+*{
+    transition: .2s;
+}
+
+body{
+    font: 1.2rem math;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    --color: lightblue;
+    --b: 1px solid var(--color);
+    gap: 10px;
+    margin: 30px;
+}
+
+button{
+    color: var(--color);
+    background: transparent;
+    font-size: 1rem;
+    border: thin lightblue;
+    padding: 5px;
+    cursor: pointer;
+    transition: .2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* box-sizing: content-box; */
+}
+
+[type="text"]{
+    padding: 7px;
+    border: var(--b);
+    border-radius: .7em;
+    width: fit-content;
+    color: gray;
+}
+[type="text"]:hover{
+    border-color: blue
+}
+[type="text"]:active, [type="text"]:focus{
+    border-color: darkblue;
+    outline: none;
+}
+
+
+button:hover, button:active{
+    padding: 10px;
+    border: 1px solid lightblue;
+    border-radius: 1em;
+}
+
+h2{
+    border-bottom: var(--b);
+    margin: 0;
+    padding: 5px;
+}
+
+
+#questionslist{
+    display: flex;
+    flex-flow: column;
+    gap: 5px;
+    list-style-type: armenian;
+}
+
+#questionslist>li{
+    /* display: flex; */
+    gap: 5px;
+}
+
+#questionslist>li button, #setupdesc button{
+    width: 30px;
+    height: 30px;
+    float: right;
+    font-size: 1.2rem;
+}
+
+
+
+Do a 'share interview' feature.
+save all questions to a json,
+save voice
+save voice settings
+
+or save in queries that can be read (will be too long)
+
+or reroute by bitly
+
+
