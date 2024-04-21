@@ -1,70 +1,96 @@
 <!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>AI interview</title>
+        <style>
+            @import url(webint.css);
+        </style>
+    </head>
 
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI interview</title>
-    <style>
-        @import url(webint.css);
-    </style>
-</head>
-
-<body>
-    <h2>AI interview</h2>
-    <div id="setup">
-        <div id="setupdesc">
-            Questions the AI should ask you
-            <button id=addquestion>+</button>
-        </div>
-        <ul id="questionslist"></ul>
-        <div>
-            Input text to say after interview:
-            <input type="text" id="after" placeholder="Done with interview. Thank you for your time.">
-        </div>
-        <div id="voicechoices">
-            <h4>Choose Voice: </h4>
-            <label>David<input type=radio checked name=voice value=0></label>
-            <label>Mark<input type=radio name=voice value=1></label>
-            <label>Zira<input type=radio name=voice value=2></label>
-        </div>
-        <label id="ondout">Use Video? <input type=checkbox id="shouldusevideo" checked></label>
-        <p id="errors"></p>
-        <button id="startbutton">START</button>
-    </div>
-    <div id="embassy">
-        <div id="interviewbox">
-            <video id="video" src></video>
+    <body>
+        <div id="ACCESSORIES">
+            <div id="loading" src></div>
             <div id="controls">
-                <button id="playorpause">Pause Recording</button>
-                <button id="say">Repeat</button>
-                <button id="forward">Forward</button>
+                <button id="TOGGLELAYOUT">|||</button>
+                <button id="PLAYORPAUSE">PAUSE</button>
+                <button class="SAY">
+                    <span>REPEAT</span>
+                    <select>
+                        <option>\/</option>
+                        <option>Repeat</option>
+                        <option>Say differently</option>
+                    </select>
+                </button>
+                <button id="PREV">PREVIOUS</button>
+                <button id="NEXT">NEXT</button>
             </div>
-            <div id="loading" src hidden></div>
         </div>
-        <form id="you">
-            <p id="questionbox"></p>
-            <textarea id="answerbox" required></textarea>
-            <button id="answerquestion">ANSWER</button>
-        </form>
-    </div>
-    <table id="responses">
-        <tr>
-            <td id="respdesc" colspan=2>Your Responses</td>
-        </tr>
-        <tr>
-            <th>Questions</th>
-            <th>Answers</th>
-        </tr>
-    </table>
-    <div id="responseHolder">
-        <video id="response" controls></video>
-        <button id="save">SAVE VIDEO</button>
-    </div>
-    <script src="funcs.js"></script>
-    <script src="script.js"></script>
-    <script src="events.js"></script>
-    <script src="setup.js"></script>
-    <button id="refresher" onclick='location=location'>Restart</button>
-</body>
+        <p id="ERRORS">Input a question, please!</p>
+        <button id="REFRESHER" disabled onclick="location=location">RESTART</button>
+        <h2>AI interview</h2>
+        <div id="SETUP">
+            <div id="SETUPDESC">
+                <span>Questions the AI should ask you</span>
+                <button id="ADDQUESTION">+</button>
+            </div>
+            <ul id="QUESTIONLIST"></ul>
+            <div>
+                <label for="SHOULDUSEVIDEO">Use Video: </label>
+                <input type=checkbox id="SHOULDUSEVIDEO" checked>
+                <!-- will set display on without video / blur them / change their var: --display -->
+                <!-- Use toggle later -->
+            </div>
+            <div class="withoutVideo">
+                <label for="TEXTAFTER"> Input text to say after interview:</label>
+                <input type="text" id="TEXTAFTER" value="Done with interview. Thank you for your time.">
+            </div>
+            <div class="withoutVideo">
+                <h4>Choose Voice: </h4>
+                <div class="searchui">
+                    <input type="text" id="VOICESEARCHBOX">
+                    <select id="VOICELIST">
+                        <option>Microsoft David</option>
+                        <option>Microsoft Mark</option>
+                        <option>Microsoft Zira</option>
+                    </select>
+                </div>
+            </div>
+            <button id="STARTBUTTON">START</button>
+        </div>
+        <div id="VIDEOINTERVIEW">
+            <!-- flexbox, could be row/column -->
+            <!-- inner also flex, flex-flow: inverse(parent) -->
+            <video id="VIDEO" src controls></video>
+            <!-- space for controls class -->
+        </div>
+        <div id="TEXTINTERVIEW">
+            <p id="QUESTIONBOX"></p>
+            <textarea id="ANSWERBOX" required rows="4" cols="35"></textarea>
+            <!-- space for controls class -->
+        </div>
+        <div class="response" id="TXTRESP">
+            <table id="TEXTRESPONSE">
+                <tr>
+                    <td colspan=2>Your Responses</td>
+                </tr>
+                <tr>
+                    <th>Questions</th>
+                    <th>Answers</th>
+                </tr>
+            </table>
+            <button id="PRINT">PRINT</button>
+        </div>
+        <div class="response" id="VIDRESP">
+            <video id="VIDEORESPONSE" controls></video>
+            <button id="SAVE" class="">SAVE</button>
+        </div>
+        <script src="funcs.js"></script>
+        <script src="script.js"></script>
+        <script src="events.js"></script>
+        <script src="setup.js"></script>
+    </body>
 
 </html>

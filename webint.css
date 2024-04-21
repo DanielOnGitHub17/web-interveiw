@@ -1,14 +1,19 @@
+/* General */
 *{
     transition: .2s;
+    clear: both;
+    /* VARIABLES */
+    --color: lightblue;
+    --b: 1px solid var(--color);
+    --usevideo: flex;
+    /* end VARIABLES */
 }
 
 body{
-    font: 1.2rem math;
+    font: 1.4rem math;
     display: flex;
     flex-flow: column;
     align-items: center;
-    --color: lightblue;
-    --b: 1px solid var(--color);
     gap: 10px;
     margin: 30px;
 }
@@ -24,15 +29,27 @@ button{
     display: flex;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
     /* box-sizing: content-box; */
+}
+
+button:hover, button:active{
+    padding: 10px;
+    border: 1px solid lightblue;
+    border-radius: 1em;
+}
+[disabled]{
+    filter: blur(1px) grayscale(.5);
 }
 
 [type="text"]{
     padding: 7px;
-    border: var(--b);
-    border-radius: .7em;
+    border: none;
+    border-bottom: var(--b);
+    border-width: 2px;
     width: fit-content;
     color: gray;
+    font-size: 0.7em;
 }
 [type="text"]:hover{
     border-color: blue
@@ -42,11 +59,11 @@ button{
     outline: none;
 }
 
-
-button:hover, button:active{
-    padding: 10px;
-    border: 1px solid lightblue;
-    border-radius: 1em;
+/* More specific general */
+#REFRESHER{
+    position: absolute;
+    float: right;
+    align-self: flex-end;
 }
 
 h2{
@@ -55,7 +72,68 @@ h2{
     padding: 5px;
 }
 
+#ERRORS{
+    color: darkred;
+    font-size: 0.9em;
+    margin: 0;
+    padding: 0;
+    letter-spacing: 0.1em;
+}
 
+/* loading */
+#loading, #loading:before{
+    width: 80px;
+    height: 80px;
+    border: none;
+    position: fixed;
+    top: calc(50vh - 40px);
+    left: calc(50vw - 40px); z-index: 199;
+    margin: 0;
+}
+#loading:before{
+    content: '';
+    width: 1000%;
+    height: 1000%;
+    top: 0;
+    left: 0;
+    border-radius: 0;
+    background: rgb(0 0 0 / 60%);
+}
+body #loading>div{
+    width: 20px;
+    height: 20px;
+    border: none;
+    background: white;
+    top: 0;
+    left: calc(50% - 10px);
+    position: absolute;
+    opacity: 0;
+    z-index: 200;
+    border-radius: 40px;
+    padding: 0;
+    margin: 0;
+    animation: blink 1s cubic-bezier(0, 0, 1, -0.12) infinite;
+}
+@keyframes blink{
+    0%{opacity: 1}
+    50%{opacity: 0}
+}
+#c0{transform: translate(0px, 0px);}
+#c1{transform: translate(20px, 11px);}
+#c2{transform: translate(30px, 30px)}
+#c3{transform: translate(20px, 50px)}
+#c4{transform: translate(0px, 60px)}
+#c5{transform: translate(-20px, 50px)}
+#c6{transform: translate(-30px, 30px)}
+#c7{transform: translate(-20px, 11px);}
+/* end loading */
+
+
+/* end More specific general */
+
+/* end General */
+
+/* SETUP SCREEN */
 #questionslist{
     display: flex;
     flex-flow: column;
@@ -75,8 +153,28 @@ h2{
     font-size: 1.2rem;
 }
 
+/* end SETUP SCREEN */
+
+/* VIDEOINTERVIEW SCREEN */
+/* end VIDEOINTERVIEW SCREEN */
+
+/* TEXTINTERVIEW SCREEN */
+/* end TEXTINTERVIEW SCREEN */
 
 
+
+/* VIDEORESPONSE SCREEN */
+/* end VIDEORESPONSE SCREEN */
+
+
+/* TEXTRESPONSE SCREEN */
+/* end TEXTRESPONSE SCREEN */
+
+
+
+
+
+/*
 Do a 'share interview' feature.
 save all questions to a json,
 save voice
@@ -87,3 +185,4 @@ or save in queries that can be read (will be too long)
 or reroute by bitly
 
 
+*/
