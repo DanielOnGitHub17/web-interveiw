@@ -12,17 +12,17 @@
 
     <body>
         <div id="ACCESSORIES">
-            <div id="controls">
-                <button id="TOGGLELAYOUT">|||</button>
+            <div id="CONTROLS">
+                <button id="TOGGLELAYOUT" class="icon">|||</button>
                 <button id="PLAYORPAUSE">PAUSE</button>
-                <button class="SAY">
-                    <span>REPEAT</span>
+                <!-- Repeat should be the button -->
+                <div class="say">
+                    <button>REPEAT</button>
                     <select>
-                        <option>\/</option>
                         <option>Repeat</option>
                         <option>Say differently</option>
                     </select>
-                </button>
+                </div>
                 <button id="PREV">PREVIOUS</button>
                 <button id="NEXT">NEXT</button>
             </div>
@@ -33,7 +33,7 @@
         <div id="SETUP">
             <div id="SETUPDESC">
                 <span>Questions the AI should ask you</span>
-                <button id="ADDQUESTION">+</button>
+                <button id="ADDQUESTION" class="icon">+</button>
             </div>
             <ul id="QUESTIONLIST"></ul>
             <div>
@@ -57,7 +57,7 @@
                     </select>
                 </div>
             </div>
-            <button id="STARTBUTTON">START</button>
+            <button id="STARTBUTTON" class="major">START</button>
         </div>
         <div id="VIDEOINTERVIEW">
             <!-- flexbox, could be row/column -->
@@ -80,11 +80,11 @@
                     <th>Answers</th>
                 </tr>
             </table>
-            <button id="PRINT">PRINT</button>
+            <button id="PRINT" class="major">PRINT</button>
         </div>
         <div class="response" id="VIDRESP">
             <video id="VIDEORESPONSE" controls></video>
-            <button id="SAVE" class="">SAVE</button>
+            <button id="SAVE" class="major">SAVE</button>
         </div>
         <script src="funcs.js"></script>
         <script src="scripts.js"></script>
