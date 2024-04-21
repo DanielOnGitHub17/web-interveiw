@@ -80,8 +80,8 @@ h2{
     letter-spacing: 0.1em;
 }
 
-/* loading */
-#loading, #loading:before{
+/* LOADING */
+#LOADING, #LOADING:before{
     width: 80px;
     height: 80px;
     border: none;
@@ -90,7 +90,7 @@ h2{
     left: calc(50vw - 40px); z-index: 199;
     margin: 0;
 }
-#loading:before{
+#LOADING:before{
     content: '';
     width: 1000%;
     height: 1000%;
@@ -99,20 +99,20 @@ h2{
     border-radius: 0;
     background: rgb(0 0 0 / 60%);
 }
-body #loading>div{
-    width: 20px;
-    height: 20px;
-    border: none;
-    background: white;
-    top: 0;
-    left: calc(50% - 10px);
-    position: absolute;
-    opacity: 0;
-    z-index: 200;
-    border-radius: 40px;
+#LOADING>div{
+    width: 16px;
+    height: 16px;
+    border-radius: 32px;
     padding: 0;
     margin: 0;
-    animation: blink 1s cubic-bezier(0, 0, 1, -0.12) infinite;
+    border: none;
+    background: white;
+    position: absolute;
+    top: 0;
+    left: calc(50% - 10px);
+    opacity: 0;
+    z-index: 200;
+    animation: blink 0.8s cubic-bezier(0, 0, 1, -0.12) infinite;
 }
 @keyframes blink{
     0%{opacity: 1}
@@ -126,7 +126,7 @@ body #loading>div{
 #c5{transform: translate(-20px, 50px)}
 #c6{transform: translate(-30px, 30px)}
 #c7{transform: translate(-20px, 11px);}
-/* end loading */
+/* end LOADING */
 
 
 /* end More specific general */

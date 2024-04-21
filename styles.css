@@ -39,7 +39,7 @@ li, label{
     margin-bottom: 10px;
     display: flex;
     gap: 10px; padding: 10px 15px;
-    padding-right: ;
+    /* padding-right: ; */
     background: aliceblue;
     align-items: center;
     justify-content: space-evenly;
@@ -50,14 +50,14 @@ li, label{
     border: 1px solid blue;
 }
 #shouldusevideo{scale: 3}
-#setup #ondout{margin: ;padding: 10px 5px}
+/* #setup #ondout{margin: padding: 10px 5px} */
 #voicechoices>label{
     align-self: end; 
 }
 #voicechoices input{
     scale: 1.5; border: 1px solid blue;
 }
-#voiceschoices h4{align-self: }
+/* #voiceschoices h4{align-self: } */
 button{
     background: #0078d4;
     color: white; border-color: aliceblue;
