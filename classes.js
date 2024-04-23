@@ -5,6 +5,31 @@ class Question{
     }
 }
 
+class Switch{
+    constructor(where){
+        this.container = where;
+        this.build();
+        this.event();
+    }
+    build(){
+        add((this.switch = make())
+        , add((this.holder = make()), this.container)
+        ).className = "switch";
+        this.holder.className = "switchold off";
+        this.switch.tabIndex = -1
+    }
+    event(){
+        this.switch.onclick = (event)=>{
+            event.preventDefault();
+            this.holder.classList.contains("off")
+            ?this.holder.classList.remove("off")
+            :this.holder.classList.add("off");
+        }
+    }
+    on(){
+        return !this.holder.classList.contains("off")
+    }
+}
 
 function makeQuestion(question, index) {
     let questionHolder = make('li');
