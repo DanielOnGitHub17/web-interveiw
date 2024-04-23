@@ -11,7 +11,7 @@
     </head>
 
     <body>
-        <div id="ACCESSORIES">
+        <div id="ACCESSORIES" hidden>
             <div id="CONTROLS">
                 <button id="TOGGLELAYOUT" class="icon">|||</button>
                 <button id="PLAYORPAUSE">PAUSE</button>
@@ -27,7 +27,7 @@
                 <button id="NEXT">NEXT</button>
             </div>
         </div>
-        <p id="ERRORS">Input a question, please!</p>
+        <p id="ERRORS"></p>
         <button id="REFRESHER" disabled onclick="location=location">RESTART</button>
         <h2>AI interview</h2>
         <div id="SETUP">
@@ -35,16 +35,19 @@
                 <span>Questions the AI should ask you</span>
                 <button id="ADDQUESTION" class="icon">+</button>
             </div>
-            <ul id="QUESTIONLIST"></ul>
-            <div>
-                <label for="SHOULDUSEVIDEO">Use Video: </label>
-                <input type=checkbox id="SHOULDUSEVIDEO" checked>
-                <!-- will set display on without video / blur them / change their var: --display -->
-                <!-- Use toggle later -->
+            <ul id="QUESTIONLIST">
+                <li>
+                    <input type="text" value="Daniel is a boy.">
+                    <button class="icon"><></button>
+                    <button class="icon">X</button>
+                </li>
+            </ul>
+            <div id="SHOULDVIDEO">
+                <span>Toggle Video: </span>
             </div>
             <div class="withoutVideo">
                 <label for="TEXTAFTER"> Input text to say after interview:</label>
-                <input type="text" id="TEXTAFTER" value="Done with interview. Thank you for your time.">
+                <input type="text" id="TEXTAFTER" value="This interview has ended">
             </div>
             <div class="withoutVideo">
                 <h4>Choose Voice: </h4>
@@ -87,8 +90,8 @@
             <button id="SAVE" class="major">SAVE</button>
         </div>
         <script src="funcs.js"></script>
-        <script src="scripts.js"></script>
         <script src="classes.js"></script>
+        <script src="scripts.js"></script>
         <script src="events.js"></script>
         <script src="setup.js"></script>
     </body>

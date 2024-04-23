@@ -18,3 +18,6 @@ identify();
         loading.append(c);
     }
 })();
+
+// create switch inside SHOULDVIDEO
+const videoSwitch = new Switch(SHOULDVIDEO)

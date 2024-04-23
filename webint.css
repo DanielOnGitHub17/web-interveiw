@@ -1,6 +1,6 @@
 /* General */
 *{
-    transition: .2s;
+    transition: 0.1s;
     clear: both;
     /* VARIABLES */
     --color: lightblue;
@@ -50,11 +50,18 @@ button:active{
 }
 
 /* icon buttons */
-/* .icon{
-    padding: 0
-} */
+.icon{
+    width: 2em;
+    height: 2em;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
 .icon:hover, .icon:focus, .icon:active{
-    border-radius: 0;
+    padding: 0;
+    border-radius: 1em;
 }
 /* end icon buttons */
 
@@ -87,7 +94,7 @@ button:active{
     border-width: 2px;
     width: fit-content;
     color: gray;
-    font-size: 0.7em;
+    font-size: 0.9em;
 }
 [type="text"]:hover{
     border-color: blue
@@ -218,25 +225,81 @@ select:active, select:focus{
 /* end General */
 
 /* SETUP SCREEN */
-#questionslist{
+#SETUPDESC{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: var(--b);
+}
+/* #SETUPDESC>span{
+    border-bottom: var(--b);
+} */
+#ADDQUESTION{
+    font-size: 1em;
+}
+#QUESTIONLIST{
     display: flex;
     flex-flow: column;
     gap: 5px;
-    list-style-type: armenian;
+    list-style-type: symbols(1,2,3);
+    list-style-position: outside;
 }
 
-#questionslist>li{
+#QUESTIONLIST>li{
     /* display: flex; */
-    gap: 5px;
+    flex-flow: row;
+    /* gap: 5px; */
+    align-items: center;
+    position: relative;
+    /* border-bottom: var(--b); */
 }
-
-#questionslist>li button, #setupdesc button{
-    width: 30px;
-    height: 30px;
-    float: right;
-    font-size: 1.2rem;
+#QUESTIONLIST>li [type="text"]{
+    /* justify-self: flex-start; */
+    display: inline-block;
+    width: 70%;
 }
-
+*{
+    --x: #QUESTIONLIST>li span;
+}
+--x{
+    display: none;
+    color: red;
+}
+#QUESTIONLIST>li button{
+    float: right; clear: none;
+    /* display: none; */
+}
+#SHOULDVIDEO{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+.switchold{
+    width: 2em;
+    height: 1em;
+    display: flex;
+    flex-flow: row;
+    justify-content: end;
+    border-radius: 40px;
+    border: var(--b);
+    border-width: 3px;
+    align-items: center;
+    padding: 2px;
+}
+.switchold.off{
+    justify-content: start;
+    background-color: black;
+}
+.switch{
+    background-color: lightblue;
+    width: 1em;
+    height: 1em;
+    border-radius: 1em;
+    cursor: pointer;
+}
+.switch:hover{
+    filter: drop-shadow(2px 4px 6px black);
+}
 /* end SETUP SCREEN */
 
 /* VIDEOINTERVIEW SCREEN */
