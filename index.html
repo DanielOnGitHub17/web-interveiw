@@ -35,29 +35,26 @@
                 <span>Questions the AI should ask you</span>
                 <button id="ADDQUESTION" class="icon">+</button>
             </div>
-            <ul id="QUESTIONLIST">
-                <li>
-                    <input type="text" value="Daniel is a boy.">
-                    <button class="icon"><></button>
-                    <button class="icon">X</button>
-                </li>
-            </ul>
+            <ul id="QUESTIONLIST"></ul>
             <div id="SHOULDVIDEO">
                 <span>Toggle Video: </span>
             </div>
-            <div class="withoutVideo">
-                <label for="TEXTAFTER"> Input text to say after interview:</label>
-                <input type="text" id="TEXTAFTER" value="This interview has ended">
-            </div>
-            <div class="withoutVideo">
-                <h4>Choose Voice: </h4>
-                <div class="searchui">
-                    <input type="text" id="VOICESEARCHBOX">
-                    <select id="VOICELIST">
-                        <option>Microsoft David</option>
-                        <option>Microsoft Mark</option>
-                        <option>Microsoft Zira</option>
-                    </select>
+            <div id="VIDEOSETTINGS">
+                <div>
+                    <label for="TEXTAFTER"> Input text to say after interview:</label>
+                    <input type="text" id="TEXTAFTER" value="This interview has ended">
+                </div>
+                <div>
+                    <strong>Choose Voice: </strong>
+                    <div class="searchui">
+                        <!-- all searchuis will have input and select -->
+                        <input type="text" id="VOICESEARCHBOX">
+                        <select id="VOICELIST">
+                            <option>Microsoft David</option>
+                            <option>Microsoft Mark</option>
+                            <option>Microsoft Zira</option>
+                        </select>
+                    </div>
                 </div>
             </div>
             <button id="STARTBUTTON" class="major">START</button>

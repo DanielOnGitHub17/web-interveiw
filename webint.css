@@ -73,6 +73,9 @@ button:active{
     border-radius: 0.5em;
     padding: 10px 20px;
     margin: 5px;
+    text-align: center;
+    display: block;
+    justify-self: center;
 }
 .major:hover, .major:active{
     padding: 10px 20px;
@@ -231,6 +234,13 @@ select:active, select:focus{
     align-items: center;
     border-bottom: var(--b);
 }
+#SETUP{
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    gap: 10px;
+    /* border: 1px solid black; */
+}
 /* #SETUPDESC>span{
     border-bottom: var(--b);
 } */
@@ -241,8 +251,7 @@ select:active, select:focus{
     display: flex;
     flex-flow: column;
     gap: 5px;
-    list-style-type: symbols(1,2,3);
-    list-style-position: outside;
+    list-style-type: decimal;
 }
 
 #QUESTIONLIST>li{
@@ -299,6 +308,10 @@ select:active, select:focus{
 }
 .switch:hover{
     filter: drop-shadow(2px 4px 6px black);
+}
+
+.withoutVideo{
+    display: var(--usevideo);
 }
 /* end SETUP SCREEN */
 
