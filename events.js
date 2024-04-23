@@ -1,11 +1,17 @@
 // //all functions and variables if (except all event based) here
-// onbeforeunload=()=>{
-//     speechSynthesis.cancel();
-//     localStorage.questions = JSON.stringify([...questionslist.children].map(i=>i.querySelector('.question').innerText));
-// }
-// addquestion.onclick=()=>{
-//     makeQuestion('Write a question here, write a question here', questionslist.childElementCount+1)
-// }
+
+ADDQUESTION.onclick=()=>new Question
+
+for (let index = 0; index < 5; index++) {
+    new Question
+    
+}
+
+onbeforeunload=()=>{
+    speechSynthesis.cancel();
+    localStorage.questions = JSON.stringify([...QUESTIONLIST.children].map(i=>i.querySelector('input').innerText));
+}
+
 // startbutton.onclick=()=>{
 //     if (!(questions=[...questionslist.children].map(i=>i.querySelector('.question').innerText)).length) return errors.innerHTML = 'No question added, Please add at least <i>one</i> questions to proceed';
 //     if (!confirm('Proceed?')) return
