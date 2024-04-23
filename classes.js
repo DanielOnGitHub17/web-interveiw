@@ -1,22 +1,56 @@
 class Question{
-    constructor(question){
-        this.question = question;
-        this.build()
+    constructor(question="What do you want to be asked?"){
+        this._question = question;
+        this.build();
+        this.event();
     }
+    get question(){
+        return this.text.value;
+    }
+    set question(ask){
+        this.text.value = ask;
+    }
+    build(){
+        add(
+            (this.text = make("input"))
+            ,    add(this.box = make("li"), QUESTIONLIST)
+        ).value = this._question;
+        this.text.type = "text";
+
+        ["mover", "deleter"].forEach((type, i)=>{
+            add(
+                (this[type] = make("button")), this.box
+            ).className = "icon";
+            this[type].textContent = Question.iconValues[i];
+        });
+    }
+    event(){
+        this.deleter.onclick=()=>this.delete();
+    }
+    delete(){
+        this.box.remove();
+        Question.deletedQuestions.push(this);
+    }
+    restore(){
+        QUESTIONLIST.append(this.box);
+    }
+    static iconValues = ['<>', 'X'];
+    static deletedQuestions = [];
 }
 
 class Switch{
-    constructor(where){
-        this.container = where;
+    constructor(where, obj, property, values){
+        [this.container, this.obj, this.property, this.values] = arguments
         this.build();
         this.event();
+        Switch.swtiches.push(this);
     }
     build(){
         add((this.switch = make())
         , add((this.holder = make()), this.container)
         ).className = "switch";
         this.holder.className = "switchold off";
-        this.switch.tabIndex = -1
+        this.switch.tabIndex = -1;
     }
     event(){
         this.switch.onclick = (event)=>{
@@ -24,48 +58,18 @@ class Switch{
             this.holder.classList.contains("off")
             ?this.holder.classList.remove("off")
             :this.holder.classList.add("off");
+            this.action();
         }
     }
     on(){
         return !this.holder.classList.contains("off")
     }
-}
-
-function makeQuestion(question, index) {
-    let questionHolder = make('li');
-    [['span', 'question', question],
-     ['button', 'removebutton', 'X']].forEach(e=>{
-         questionHolder.appendChild((questionHolder[e[1]]=make(e[0]))).className=e[1];
-         questionHolder[e[1]].textContent=e[2];
-         //appendChild would return the element so you can add a className
-     });
-    [['up', '/\\'], ['down', '\\/']].forEach((a)=>{
-        questionHolder.upanddown
-        .appendChild(questionHolder[a[0]]=make('button')).className=a[0];
-        questionHolder[a[0]].textContent=a[1]
-    });
-    questionHolder.question.contentEditable=true;//make contentEditable
-    questionslist.append(questionHolder);//add to DOM
-    //start filling in
-    questionHolder.questionnumber.textContent=index;
-    questionHolder.question.value=question;
-    //events
-    questionHolder.removebutton.onclick=()=>questionHolder.remove();//for deleting the question
-    questionHolder.upanddown.onclick=()=>{
-        if (event.target.parentElement!=questionHolder.upanddown)return;//so that I can use ternary ifelse
-        let dir = event.target.className;
-        (event.target.className=='up')
-        ?(questionslist.firstElementChild!=questionHolder)
-            &&questionslist
-            .insertBefore(questionHolder, questionHolder.previousElementSibling)
-        :(questionslist.lastElementChild!=questionHolder)
-            &&((questionslist.lastElementChild
-                .previousElementSibling==questionHolder)
-              ?questionslist.appendChild(questionHolder)
-               :questionslist.insertBefore(questionHolder
-                , questionHolder.nextElementSibling.nextElementSibling)
-              )
-    };
-    questionHolder.onclick=()=>questionslist.querySelectorAll('.questionnumber').forEach((n, i)=>n.textContent=i+1);
-    questionHolder.question.focus()
+    action(){
+        // all switches will set a property of something
+        // between to two values (flex/none) (true/false)
+        // 1/0
+        let [obj, property, values] = [this.obj, this.property, this.values]
+        obj[property] = obj[property] ==  values[0]?values[1]:values[0]
+    }
+    static swtiches = [];
 }
