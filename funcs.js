@@ -8,7 +8,8 @@ let make = (name='div')=>document.createElement(name)
   , add = (what,to=document.body)=>to.appendChild(what)
   , bx = (who)=>who.getBoundingClientRect()
   , show = (what) => what.style.display=""
-  , hide = (what) => what.style.display="none";
+  , hide = (what) => what.style.display="none"
+  , remove = (what, from) => from.splice(from.indexOf(what), 1);
 
 
 // switch screen

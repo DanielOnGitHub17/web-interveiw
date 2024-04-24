@@ -33,28 +33,24 @@
         <div id="SETUP">
             <div id="SETUPDESC">
                 <span>Questions the AI should ask you</span>
-                <button id="ADDQUESTION" class="icon">+</button>
+                <div>
+                    <button id="ADDQUESTION" class="icon">+</button>
+                    <button id="RESTOREQUESTION" class="icon">=</button>
+                </div>
             </div>
             <ul id="QUESTIONLIST"></ul>
             <div id="SHOULDVIDEO">
-                <span>Toggle Video: </span>
+                <span>Toggle video usage: </span>
             </div>
             <div id="VIDEOSETTINGS">
                 <div>
                     <label for="TEXTAFTER"> Input text to say after interview:</label>
                     <input type="text" id="TEXTAFTER" value="This interview has ended">
                 </div>
-                <div>
-                    <strong>Choose Voice: </strong>
-                    <div class="searchui">
-                        <!-- all searchuis will have input and select -->
-                        <input type="text" id="VOICESEARCHBOX">
-                        <select id="VOICELIST">
-                            <option>Microsoft David</option>
-                            <option>Microsoft Mark</option>
-                            <option>Microsoft Zira</option>
-                        </select>
-                    </div>
+                <div id="VOICETHINGS">
+                    <button id="TESTVOICE">TEST</button>
+                    <span>Choose Voice: </span>
+                    <!-- add other controls: pitch/etc -->
                 </div>
             </div>
             <button id="STARTBUTTON" class="major">START</button>
@@ -73,7 +69,7 @@
         <div class="response" id="TXTRESP">
             <table id="TEXTRESPONSE">
                 <tr>
-                    <td colspan=2>Your Responses</td>
+                    <th colspan=2>Your Responses</th>
                 </tr>
                 <tr>
                     <th>Questions</th>

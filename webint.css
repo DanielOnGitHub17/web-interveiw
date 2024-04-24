@@ -91,7 +91,7 @@ button:active{
 
 /* input text */
 [type="text"]{
-    padding: 7px;
+    padding: 7px 0;
     border: none;
     border-bottom: var(--b);
     border-width: 2px;
@@ -127,6 +127,9 @@ h2{
     margin: 0;
     padding: 0;
     letter-spacing: 0.1em;
+}
+#ACCESSORIES{
+    display: none;
 }
 
 /* LOADING */
@@ -228,23 +231,24 @@ select:active, select:focus{
 /* end General */
 
 /* SETUP SCREEN */
-#SETUPDESC{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: var(--b);
-}
-#SETUP{
+body>div{
     display: flex;
     flex-flow: column;
     justify-content: center;
     gap: 10px;
     /* border: 1px solid black; */
 }
+#SETUPDESC{
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: var(--b);
+}
 /* #SETUPDESC>span{
     border-bottom: var(--b);
 } */
-#ADDQUESTION{
+#SETUPDESC>button{
     font-size: 1em;
 }
 #QUESTIONLIST{
@@ -260,7 +264,13 @@ select:active, select:focus{
     /* gap: 5px; */
     align-items: center;
     position: relative;
+    flex-wrap: nowrap;
+    max-width: 100%;
     /* border-bottom: var(--b); */
+}
+#QUESTIONLIST>li.highlight{
+    border: var(--b);
+    border-radius: 1em;
 }
 #QUESTIONLIST>li [type="text"]{
     /* justify-self: flex-start; */
@@ -275,7 +285,8 @@ select:active, select:focus{
     color: red;
 }
 #QUESTIONLIST>li button{
-    float: right; clear: none;
+    float: right; clear: left;
+    outline-color: red;
     /* display: none; */
 }
 #SHOULDVIDEO{
@@ -310,8 +321,43 @@ select:active, select:focus{
     filter: drop-shadow(2px 4px 6px black);
 }
 
-.withoutVideo{
-    display: var(--usevideo);
+#VIDEOSETTINGS{
+    display: flex;
+    flex-flow: column;
+    gap: 10px;
+}
+#VOICETHINGS{
+    display: flex;
+    gap: 20px;
+    flex-flow: row;
+    align-items: center;
+}
+.searchui{
+    display: flex;
+    flex-flow: column;
+    /* justify-content: baseline; */
+}
+.searchui>ul{
+    width: 50%;
+    font-size: 0.9em;
+    position: absolute;
+    margin-top: 2em;
+    z-index: 199;
+    padding: 10px;
+    border: var(--b);
+    border-radius: 0.5em;
+    overflow-y: scroll;
+    background-color: white;
+    height: 10em;
+}
+.searchui li{
+    cursor: pointer;
+    padding: 3px;
+}
+.searchui li:hover{
+    padding: 5px;
+    border: var(--b);
+    border-radius: 0.5em;
 }
 /* end SETUP SCREEN */
 

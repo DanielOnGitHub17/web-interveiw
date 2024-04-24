@@ -1,15 +1,39 @@
 // //all functions and variables if (except all event based) here
-
+onload=()=>{
+    // Turn all elements with ID into variables
+    identify();
+    // restore saved questions
+    restoreSavedQuestions();
+    // create a toggle to switch video options
+    createVideoToggle();
+    // create voice search ui
+    createVoiceSearchUI()
+}
+// add event listeners
+addEventListener("keyup", (event)=>{
+    if (event.key == 'b' && event.ctrlKey){
+        Question.restoreLast();
+    }
+})
+// add question button
 ADDQUESTION.onclick=()=>new Question
 
-for (let index = 0; index < 5; index++) {
-    new Question
-    
+// restore question button
+RESTOREQUESTION.onclick=()=>Question.restoreLast();
+
+// TESTing voices
+TESTVOICE.onclick =()=>{
+    speechSynthesis.cancel();
+    if (!TESTVOICE.test) return;
+    let talk = new SpeechSynthesisUtterance(
+        `Hi, this is speech synthesis, using ${TESTVOICE.test.name}`);
+    talk.voice = TESTVOICE.test;
+    speechSynthesis.speak(talk);
 }
 
 onbeforeunload=()=>{
     speechSynthesis.cancel();
-    localStorage.questions = JSON.stringify([...QUESTIONLIST.children].map(i=>i.querySelector('input').innerText));
+    localStorage.questions = JSON.stringify([...QUESTIONLIST.children].map(q=>q.obj.question));
 }
 
 // startbutton.onclick=()=>{
@@ -121,3 +145,5 @@ onbeforeunload=()=>{
 // getAll('[name=voice]').forEach(v=>{
 //     v.onchange=()=>{voice=speechSynthesis.getVoices()[+v.value]}
 // })
+
+// add voice recording to use instead of talking out

@@ -1,8 +1,5 @@
-// Turn all elements with ID into variables
-identify();
-
 // initialize the loading element, that blocks the screen and all
-(function loader(){
+function loader(){
     let loading;
     (loading = make()).id = "LOADING";
     showLoading = () => void add(loading);
@@ -17,34 +14,32 @@ identify();
         // will have to change animation-duration and dimensions too
         loading.append(c);
     }
-})();
+};
 
 
 // create switch inside SHOULDVIDEO
-const videoSwitch = new Switch(SHOULDVIDEO
-    , VIDEOSETTINGS.style, "display", ["none", ""])
+function createVideoToggle(){
+    const videoSwitch = new Switch(SHOULDVIDEO
+        , VIDEOSETTINGS.style, "display", ["none", ""])
+}
 
+// create search ui for voices
+function createVoiceSearchUI(){
+    speechSearch = new SearchUI(VOICETHINGS
+        , ()=>speechSynthesis.getVoices()
+        // , ()=>["Daniel", "Ogirimah", "Enesi"]
+    ) 
+}
+
+// well...
+function restoreSavedQuestions(){
+    const QUESTIONS = localStorage.questions?JSON.parse(localStorage.questions):[];
+    QUESTIONS.forEach(q=>(new Question(q)));
+
+}
 
 // function makeQuestion(question) {
-// }
-//     let questionHolder = make('li');
-//     [['span', 'question', question],
-//      ['button', 'removebutton', 'X']].forEach(e=>{
-//          questionHolder.appendChild((questionHolder[e[1]]=make(e[0]))).className=e[1];
-//          questionHolder[e[1]].textContent=e[2];
-//          //appendChild would return the element so you can add a className
-//      });
-//     [['up', '/\\'], ['down', '\\/']].forEach((a)=>{
-//         questionHolder.upanddown
-//         .appendChild(questionHolder[a[0]]=make('button')).className=a[0];
-//         questionHolder[a[0]].textContent=a[1]
-//     });
-//     questionHolder.question.contentEditable=true;//make contentEditable
-//     questionslist.append(questionHolder);//add to DOM
-//     //start filling in
-//     questionHolder.questionnumber.textContent=index;
-//     questionHolder.question.value=question;
-//     //events
+// }   //events
 //     questionHolder.removebutton.onclick=()=>questionHolder.remove();//for deleting the question
 //     questionHolder.upanddown.onclick=()=>{
 //         if (event.target.parentElement!=questionHolder.upanddown)return;//so that I can use ternary ifelse
@@ -64,3 +59,5 @@ const videoSwitch = new Switch(SHOULDVIDEO
 //     questionHolder.onclick=()=>questionslist.querySelectorAll('.questionnumber').forEach((n, i)=>n.textContent=i+1);
 //     questionHolder.question.focus()
 // }
+
+// a = new Question
