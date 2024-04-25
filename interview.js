@@ -18,7 +18,7 @@ class Interview{
         this.container = Interview.containers[this.useVideo+0];
         this.container.append(CONTROLS);
         this.layoutButton = new Switch(CONTROLS
-            , CONTROLS, "layout");
+            , CONTROLS, "layout", [1, 0]);
         switchScreen(this.container.id);
         // events
         this.event()
@@ -98,6 +98,7 @@ class Interview{
                     Interview.videoResponse();
                     return;
                 }
+                REFRESHER.disabled = false;
                 Interview.textResponse(this.questions, this.answers);
             });
             return;

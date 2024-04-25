@@ -78,8 +78,8 @@ class Question{
 }
 
 class Switch{
-    constructor(where, obj, property, values=[true, false]){
-        [this.container, this.obj, this.property, this.values] = arguments
+    constructor(where, obj, property, values){
+        [this.container, this.obj, this.property, this.values] = arguments;
         this.build();
         this.event();
         Switch.swtiches.push(this);
@@ -107,7 +107,7 @@ class Switch{
         // all switches will set a property of something
         // between to two values (flex/none) (true/false)
         // 1/0
-        let [obj, property, values] = [this.obj, this.property, this.values]
+        let [obj, property, values] = [this.obj, this.property, this.values];
         obj[property] = obj[property] ==  values[0]?values[1]:values[0]
     }
     static swtiches = [];

@@ -498,6 +498,9 @@ td:nth-child(1){
     #REFRESHER, #PRINT{
         display: none;
     }
+    h2{
+        border: none;
+    }
     /* style  */
 }
 /* end TEXTRESPONSE SCREEN */
