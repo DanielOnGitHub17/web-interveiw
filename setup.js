@@ -1,4 +1,5 @@
-// //start from the top
+
+
 // // first get the saved questions if any
 // let baseli = getS('li'), //the base for adding questions
 // questions = localStorage.questions && JSON.parse(

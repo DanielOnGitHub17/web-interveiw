@@ -13,7 +13,6 @@
     <body>
         <div id="ACCESSORIES" hidden>
             <div id="CONTROLS">
-                <button id="TOGGLELAYOUT" class="icon">|||</button>
                 <button id="PLAYORPAUSE">PAUSE</button>
                 <!-- Repeat should be the button -->
                 <div class="say">
@@ -55,17 +54,23 @@
             </div>
             <button id="STARTBUTTON" class="major">START</button>
         </div>
+
         <div id="VIDEOINTERVIEW">
             <!-- flexbox, could be row/column -->
             <!-- inner also flex, flex-flow: inverse(parent) -->
             <video id="VIDEO" src controls></video>
             <!-- space for controls class -->
         </div>
+
         <div id="TEXTINTERVIEW">
-            <p id="QUESTIONBOX"></p>
-            <textarea id="ANSWERBOX" required rows="4" cols="35"></textarea>
+            <p id="QUESTIONBOX">
+                If you had two people, one of them who knows your name.
+                How will you tell your name to the other person?
+            </p>
+            <textarea id="ANSWERBOX" required rows="3" cols="40" placeholder="respond here"></textarea>
             <!-- space for controls class -->
         </div>
+
         <div class="response" id="TXTRESP">
             <table id="TEXTRESPONSE">
                 <tr>
@@ -78,15 +83,17 @@
             </table>
             <button id="PRINT" class="major">PRINT</button>
         </div>
+
         <div class="response" id="VIDRESP">
             <video id="VIDEORESPONSE" controls></video>
             <button id="SAVE" class="major">SAVE</button>
         </div>
+
         <script src="funcs.js"></script>
         <script src="classes.js"></script>
         <script src="scripts.js"></script>
+        <script src="interview.js"></script>
         <script src="events.js"></script>
-        <script src="setup.js"></script>
     </body>
 
 </html>

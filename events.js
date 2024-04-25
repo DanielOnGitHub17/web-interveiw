@@ -2,12 +2,23 @@
 onload=()=>{
     // Turn all elements with ID into variables
     identify();
+    // make LOADING DIV
+    loader();
+    // show only SETUP
+    switchScreen("SETUP");
     // restore saved questions
     restoreSavedQuestions();
     // create a toggle to switch video options
     createVideoToggle();
     // create voice search ui
     createVoiceSearchUI()
+
+    // initialize SpeechSynthesisUtterance
+    TALK = new SpeechSynthesisUtterance();
+
+    // TESTS
+    // a = alert("Hi!").then(console.log);
+    videoSwitch.switch.click()
 }
 // add event listeners
 addEventListener("keyup", (event)=>{
@@ -25,10 +36,8 @@ RESTOREQUESTION.onclick=()=>Question.restoreLast();
 TESTVOICE.onclick =()=>{
     speechSynthesis.cancel();
     if (!TESTVOICE.test) return;
-    let talk = new SpeechSynthesisUtterance(
-        `Hi, this is speech synthesis, using ${TESTVOICE.test.name}`);
-    talk.voice = TESTVOICE.test;
-    speechSynthesis.speak(talk);
+    say(`Hi, this is speech synthesis, using ${TESTVOICE.test.name}`
+    ,  TESTVOICE.test)
 }
 
 onbeforeunload=()=>{
@@ -36,7 +45,30 @@ onbeforeunload=()=>{
     localStorage.questions = JSON.stringify([...QUESTIONLIST.children].map(q=>q.obj.question));
 }
 
-// startbutton.onclick=()=>{
+STARTBUTTON.onclick=()=>{
+    onbeforeunload();
+    questions = JSON.parse(localStorage.questions);
+    if (!questions.length){
+        return alert("You have to add at least one question");
+    } else if (videoSwitch.on && !speechSearch.value) {
+        return alert("Please, choose a voice!");
+    }
+    confirm("Are you sure you want to begin?")
+    .then(resp=>{
+        if (resp){
+            (
+                interview = new Interview(
+                    JSON.parse(localStorage.questions)
+                    , videoSwitch.on
+        )).start();
+        } else{
+            alert("Make changes then click START");
+        }
+    })
+    // console.log(interview)
+    // console.log(confirm("Do you want to start the interview"))
+    // .then(resp=>resp?interview.start():delete interview);
+}
 //     if (!(questions=[...questionslist.children].map(i=>i.querySelector('.question').innerText)).length) return errors.innerHTML = 'No question added, Please add at least <i>one</i> questions to proceed';
 //     if (!confirm('Proceed?')) return
 //     embassy.style.display='flex'; setup.style.display='none';
@@ -146,4 +178,4 @@ onbeforeunload=()=>{
 //     v.onchange=()=>{voice=speechSynthesis.getVoices()[+v.value]}
 // })
 
-// add voice recording to use instead of talking out
+// add voice recording to use instead of TALKing out

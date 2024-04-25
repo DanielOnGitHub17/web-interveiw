@@ -14,5 +14,6 @@ let make = (name='div')=>document.createElement(name)
 
 // switch screen
 function switchScreen(screenID){
-    get(screenID).style.display = ""
+    getAll("body>div").forEach(div=>{if (div.id) div.style.display = "none"});
+    get(screenID).style.display = "";
 }

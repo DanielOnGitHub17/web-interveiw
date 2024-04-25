@@ -76,6 +76,7 @@ button:active{
     text-align: center;
     display: block;
     justify-self: center;
+    margin-top: 20px;
 }
 .major:hover, .major:active{
     padding: 10px 20px;
@@ -90,7 +91,7 @@ button:active{
 /* end buttons */
 
 /* input text */
-[type="text"]{
+[type="text"], textarea{
     padding: 7px 0;
     border: none;
     border-bottom: var(--b);
@@ -99,10 +100,10 @@ button:active{
     color: gray;
     font-size: 0.9em;
 }
-[type="text"]:hover{
+[type="text"]:hover, textarea:hover{
     border-color: blue
 }
-[type="text"]:active, [type="text"]:focus{
+[type="text"]:active, [type="text"]:focus, textarea:active, textarea:focus{
     border-color: darkblue;
     outline: none;
 }
@@ -139,7 +140,7 @@ h2{
     border: none;
     position: fixed;
     top: calc(50vh - 40px);
-    left: calc(50vw - 40px); z-index: 199;
+    left: calc(50vw - 40px); z-index: 20;
     margin: 0;
 }
 #LOADING:before{
@@ -163,7 +164,7 @@ h2{
     top: 0;
     left: calc(50% - 10px);
     opacity: 0;
-    z-index: 200;
+    z-index: 21;
     animation: blink 0.8s cubic-bezier(0, 0, 1, -0.12) infinite;
 }
 @keyframes blink{
@@ -184,13 +185,22 @@ h2{
 #CONTROLS{
     display: flex;
     flex-flow: row;
-    align-items: center;
     justify-content: space-between;
     gap: 5px;
+    align-items: center;
+}
+#CONTROLS.side{
+    flex-flow: column;
+    align-items: end;
 }
 #CONTROLS>button, .say{
     border-right: var(--b);
     gap: 0px
+}
+#CONTROLS.side>button, #CONTROLS.side>div{
+    border: none;
+    /* border-right: var(--b`); */
+    border-bottom: var(--b);
 }
 .say>*{
     gap: 0px;
@@ -226,7 +236,50 @@ select:active, select:focus{
 }
 /* end INTERVIEW CONTROLS */
 
+/* Modals */
+.modal{
+    border: var(--b);
+    border-width: 3px;
+    border-radius: 0.8em;
+    /* display: none; */
+    flex-flow: row;
+    width: 18em;
+    position: fixed;
+    /* top: 0; */
+    left: calc(50% - 9em);
+    flex-wrap: wrap;
+    z-index: 23;
+    background-color: white;
+    padding: 10px;
+    box-sizing: border-box;
+    transition: 0.3s;
+    transform: scale(0);
+    align-items: center;
+    justify-content: space-evenly;
+}
+.modal.shown{
+    display: flex;
+    transform: scale(1);
+}
+.modal.shown.blink{
+    border-color: red;
+}
+.modal>p{
+    width: -webkit-fill-available;
+    text-align: center;
+    border: var(--b);
+    border-radius: 0.3em;
+    padding: 5px;
+    margin: 0;
+    max-height: 5em;
+    overflow-y: scroll;
+}
+/* end Modals */
+
 /* end More specific general */
+
+
+
 
 /* end General */
 
@@ -342,7 +395,7 @@ body>div{
     font-size: 0.9em;
     position: absolute;
     margin-top: 2em;
-    z-index: 199;
+    z-index: 10;
     padding: 10px;
     border: var(--b);
     border-radius: 0.5em;
@@ -363,8 +416,31 @@ body>div{
 
 /* VIDEOINTERVIEW SCREEN */
 /* end VIDEOINTERVIEW SCREEN */
-
+#TEXTINTERVIEW{
+    font-size: 0.9em;
+    align-items: center;
+}
+/* #QUESTIONBOX, #ANSWERBOX{
+} */
+#QUESTIONBOX{
+    width: 20em;
+    overflow-y: scroll;
+    border-radius: 0.8em;
+    padding: 20px;
+    scrollbar-width: none;
+    border: var(--b);
+    max-height: 50vh;
+    
+}
+#ANSWERBOX{
+    background-color: white;
+    font-size: 0.9em;
+    resize: none;
+    margin-top: 5px;
+    padding: 0 10px
+}
 /* TEXTINTERVIEW SCREEN */
+
 /* end TEXTINTERVIEW SCREEN */
 
 

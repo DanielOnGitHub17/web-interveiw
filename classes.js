@@ -52,7 +52,7 @@ class Question{
         }
         this.mover.ondragend=(event)=>{
             let at = document.elementFromPoint(event.x, event.y);
-            if (at.obj && at.obj != this){
+            if (at && at.obj && at.obj != this){
                 QUESTIONLIST.insertBefore(this.box, at.obj.box)
             }
             this.box.classList.remove("highlight");
@@ -100,7 +100,7 @@ class Switch{
             this.action();
         }
     }
-    on(){
+    get on(){
         return !this.holder.classList.contains("off")
     }
     action(){
@@ -150,22 +150,27 @@ class SearchUI{
         speechSynthesis.onvoiceschanged=(event)=>{
             let voices = this.values;
             for (let i in voices){
-                add(make("li"), this.list).textContent = voices[i].name;
+                add(make("li"), this.list).textContent = voices[i];
             }
         }
         this.searchBox.onfocus=()=>this.list.hidden=false;
-        this.searchBox.onblur=()=>setTimeout(()=>this.list.hidden=true, 500);
+        this.searchBox.addEventListener("blur"
+        , ()=>setTimeout(()=>this.list.hidden=true, 500));
+        this.searchBox.onblur=(event)=>{
+            TESTVOICE.test = getVoice(this.searchBox.value);
+        }
         this.searchBox.oninput=(event)=>{
             [...this.list.children].forEach(child=>{
-                child.hidden = !(child.textContent.toLowerCase().includes(this.searchBox.value.toLowerCase()))
-            })
+                child.hidden = !(child.textContent.toLowerCase().includes(this.searchBox.value.toLowerCase()));
+            });
+            this.searchBox.onblur();
         }
         this.list.onclick=(event)=>{
             event.stopImmediatePropagation();
             event.stopPropagation();
             if (event.target.parentElement == this.list){
                 this.searchBox.value = event.target.textContent;
-                TESTVOICE.test = this.values[this.values.map(i=>i.name).indexOf(this.searchBox.value)];
+                TESTVOICE.test = getVoice(this.searchBox.value);
             }
         }
     }
@@ -175,3 +180,79 @@ class SearchUI{
         }
     }
 }
+
+// modals
+class Modal{
+    constructor(buttons){
+        this.buttons = buttons;
+        this.message = "";
+        this.build();
+        this.event();
+        Modal.modals.push(this);
+    }
+    build(){
+        add(this.modal = make()).className = "modal";
+        add(this.messageBox = make('p'), this.modal);
+        this.buttons.forEach((button, pos)=>{
+            add(this[button] = make("button"), this.modal).textContent = button;
+            this[button].pos = pos;
+        })
+    }
+    event(){
+        this.modal.onclick=(event)=>{
+            if (event.target.nodeName == "BUTTON"){
+                this.method(event.target.pos);
+                this.close();
+            }
+        }
+    }
+    changeButtons(buttons){
+        this.buttons.forEach((button, pos)=>{
+            this[button].textContent = buttons[pos];
+            this[button].pos = pos;
+            this[buttons[pos]] = this[button];
+        })
+        this.buttons = buttons;
+    }
+    open(message, buttons){
+        // do not do anything if a modal is already up
+        if (Modal.showing) {
+            this.blink();
+            return;
+        };
+        showLoading()
+        if (buttons) this.changeButtons(buttons);
+        this.messageBox.textContent = message;
+        this.modal.classList.add("shown");
+        this[this.buttons[this.buttons.length-1]].focus();
+        // promise
+        // will be given to the event onclick
+        return new Promise((resolve)=>this.method = resolve);
+    }
+    close(){
+        this.modal.classList.remove("shown", "blink");
+        hideLoading();
+    }
+    blink(){
+        this.modal.classList.add("blink");
+        setTimeout(()=>this.modal.classList.remove("blink"), 500);
+    }
+    get shown(){
+        return this.modal.classList.contains("shown");
+    }
+    static get showing(){
+        return Modal.modals.some(modal=>modal.shown);
+    }
+    static modals = [];
+    static alertBox = new Modal(["CLOSE"]);
+    static confirmBox = new Modal(["CANCEL", "OK"]);
+}
+function alert(message, buttons){
+    return Modal.alertBox.open(message, buttons);
+}
+function confirm(message, buttons){
+    return Modal.confirmBox.open(message, buttons);
+}
+
+// maise: young girl
+// make search better by giving properties

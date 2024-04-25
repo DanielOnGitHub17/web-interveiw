@@ -19,14 +19,14 @@ function loader(){
 
 // create switch inside SHOULDVIDEO
 function createVideoToggle(){
-    const videoSwitch = new Switch(SHOULDVIDEO
+    videoSwitch = new Switch(SHOULDVIDEO
         , VIDEOSETTINGS.style, "display", ["none", ""])
 }
 
 // create search ui for voices
 function createVoiceSearchUI(){
     speechSearch = new SearchUI(VOICETHINGS
-        , ()=>speechSynthesis.getVoices()
+        , ()=>speechSynthesis.getVoices().map(i=>i.name)
         // , ()=>["Daniel", "Ogirimah", "Enesi"]
     ) 
 }
@@ -38,26 +38,17 @@ function restoreSavedQuestions(){
 
 }
 
-// function makeQuestion(question) {
-// }   //events
-//     questionHolder.removebutton.onclick=()=>questionHolder.remove();//for deleting the question
-//     questionHolder.upanddown.onclick=()=>{
-//         if (event.target.parentElement!=questionHolder.upanddown)return;//so that I can use ternary ifelse
-//         let dir = event.target.className;
-//         (event.target.className=='up')
-//         ?(questionslist.firstElementChild!=questionHolder)
-//             &&questionslist
-//             .insertBefore(questionHolder, questionHolder.previousElementSibling)
-//         :(questionslist.lastElementChild!=questionHolder)
-//             &&((questionslist.lastElementChild
-//                 .previousElementSibling==questionHolder)
-//               ?questionslist.appendChild(questionHolder)
-//                :questionslist.insertBefore(questionHolder
-//                 , questionHolder.nextElementSibling.nextElementSibling)
-//               )
-//     };
-//     questionHolder.onclick=()=>questionslist.querySelectorAll('.questionnumber').forEach((n, i)=>n.textContent=i+1);
-//     questionHolder.question.focus()
-// }
+// say function to speak
+function say(text, voice){
+    // global variable talk
+    speechSynthesis.cancel();
+    [TALK.text, TALK.voice] = arguments;
+    speechSynthesis.speak(TALK);
+}
 
-// a = new Question
+
+// get voice from voice name
+function getVoice(name){
+    return speechSynthesis.getVoices().find(i=>i.name == name);
+}
+// the rest will be at setup.js
