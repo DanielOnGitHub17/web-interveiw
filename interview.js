@@ -1,6 +1,7 @@
 
 class Interview{
     constructor(questions, useVideo){
+        window.x = this;
         [this.questions, this.useVideo] = [questions, useVideo];
         this.answers = [];
         this.index = 0;
@@ -26,20 +27,15 @@ class Interview{
         // video specific
         this.questionBox = this.useVideo?CC:QUESTIONBOX;
         if (this.useVideo){
+            this.layoutButton.switch.click();  // switch layout
             this.utterance = TALK;
             this.utterance.voice = getVoice(speechSearch.value);
             return;
         }
-        PLAYORPAUSE.remove();
-        SAY.remove();
-
         // end video specific
 
-        // build what should be built
-        // add controls to that place...
-        // setup controls.event 
-        // maybe move this class to another file (interview.js)
-        // ...
+        PLAYORPAUSE.remove();
+        SAY.remove();
     }
     event(){
         CONTROLS.onclick=(event)=>{
@@ -61,6 +57,7 @@ class Interview{
             }
         }
         if (this.useVideo){
+            this.utterance = TALK;
             this.utterance.onend=()=>console.log;
             this.utterance.onstart=()=>console.log;
             this.utterance.onpause=()=>console.log;
@@ -82,10 +79,20 @@ class Interview{
         }
     }
     start(){
-        this.ask(0);
         if (this.useVideo){
-            //
+            // say setting things up
+
+            // ask for video, audio permission,
+            // add a mediarecorder attribute
+            // give it to VIDEO as a src
+            // play video
+            // more events for pause/end/ondataavailable in this.event
+
+            // ask for record screen (only this page), will be needed for audio 
+            // (check if you can crop video off the recorded portion)
+            return;
         }
+        this.ask(0);
     }
     next(){
         let ended =this.index >= this.questions.length - 1

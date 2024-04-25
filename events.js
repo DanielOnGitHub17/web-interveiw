@@ -18,7 +18,7 @@ onload=()=>{
 
     // TESTS
     // a = alert("Hi!").then(console.log);
-    videoSwitch.switch.click()
+    // videoSwitch.switch.click()
 }
 // add event listeners
 addEventListener("keyup", (event)=>{
