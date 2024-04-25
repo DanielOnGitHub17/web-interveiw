@@ -78,7 +78,7 @@ class Question{
 }
 
 class Switch{
-    constructor(where, obj, property, values){
+    constructor(where, obj, property, values=[true, false]){
         [this.container, this.obj, this.property, this.values] = arguments
         this.build();
         this.event();

@@ -15,7 +15,7 @@
             <div id="CONTROLS">
                 <button id="PLAYORPAUSE">PAUSE</button>
                 <!-- Repeat should be the button -->
-                <div class="say">
+                <div id="SAY">
                     <button>REPEAT</button>
                     <select>
                         <option>Repeat</option>
@@ -58,7 +58,8 @@
         <div id="VIDEOINTERVIEW">
             <!-- flexbox, could be row/column -->
             <!-- inner also flex, flex-flow: inverse(parent) -->
-            <video id="VIDEO" src controls></video>
+            <video id="VIDEO"></video>
+            <p id="CC">Text from SpeechRecognition will be displayed here</p>
             <!-- space for controls class -->
         </div>
 
@@ -74,14 +75,11 @@
         <div class="response" id="TXTRESP">
             <table id="TEXTRESPONSE">
                 <tr>
-                    <th colspan=2>Your Responses</th>
-                </tr>
-                <tr>
                     <th>Questions</th>
                     <th>Answers</th>
                 </tr>
             </table>
-            <button id="PRINT" class="major">PRINT</button>
+            <button id="PRINT" onclick="print()" class="major">PRINT</button>
         </div>
 
         <div class="response" id="VIDRESP">

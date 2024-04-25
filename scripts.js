@@ -44,6 +44,7 @@ function say(text, voice){
     speechSynthesis.cancel();
     [TALK.text, TALK.voice] = arguments;
     speechSynthesis.speak(TALK);
+    return new Promise((resolve)=>say.resolve=resolve);
 }
 
 
