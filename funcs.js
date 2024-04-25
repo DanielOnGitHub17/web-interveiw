@@ -12,8 +12,17 @@ let make = (name='div')=>document.createElement(name)
   , remove = (what, from) => from.splice(from.indexOf(what), 1);
 
 
-// switch screen
+// switch screen (still DOM)
 function switchScreen(screenID){
     getAll("body>div").forEach(div=>{if (div.id) div.style.display = "none"});
     get(screenID).style.display = "";
 }
+
+// math
+// not inclusive of the last one (a is the little one)
+function randBtw(a, b){
+    return a+parseInt((b-a)*Math.random());
+}
+
+// choice
+choice = (array)=>array[randBtw(0, array.length)]

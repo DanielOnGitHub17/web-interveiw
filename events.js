@@ -15,6 +15,7 @@ onload=()=>{
 
     // initialize SpeechSynthesisUtterance
     TALK = new SpeechSynthesisUtterance();
+    TALK.onend=()=>say.resolve(true);
 
     // TESTS
     // a = alert("Hi!").then(console.log);
@@ -35,14 +36,15 @@ RESTOREQUESTION.onclick=()=>Question.restoreLast();
 // TESTing voices
 TESTVOICE.onclick =()=>{
     speechSynthesis.cancel();
-    if (!TESTVOICE.test) return;
-    say(`Hi, this is speech synthesis, using ${TESTVOICE.test.name}`
-    ,  TESTVOICE.test)
+    if (!speechSearch.value) return;
+    say(`Hi, this is speech synthesis, using ${TALK.voice.name}`)
 }
 
 onbeforeunload=()=>{
     speechSynthesis.cancel();
     localStorage.questions = JSON.stringify([...QUESTIONLIST.children].map(q=>q.obj.question));
+    // TEXTAFTER.value = 
+    // TEXTBEFORE.value =
 }
 
 STARTBUTTON.onclick=()=>{
@@ -65,9 +67,6 @@ STARTBUTTON.onclick=()=>{
             alert("Make changes then click START");
         }
     })
-    // console.log(interview)
-    // console.log(confirm("Do you want to start the interview"))
-    // .then(resp=>resp?interview.start():delete interview);
 }
 //     if (!(questions=[...questionslist.children].map(i=>i.querySelector('.question').innerText)).length) return errors.innerHTML = 'No question added, Please add at least <i>one</i> questions to proceed';
 //     if (!confirm('Proceed?')) return

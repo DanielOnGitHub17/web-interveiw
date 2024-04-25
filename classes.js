@@ -170,7 +170,7 @@ class SearchUI{
             event.stopPropagation();
             if (event.target.parentElement == this.list){
                 this.searchBox.value = event.target.textContent;
-                TESTVOICE.test = getVoice(this.searchBox.value);
+                TALK.voice = getVoice(this.searchBox.value);
             }
         }
     }

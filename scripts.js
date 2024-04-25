@@ -2,7 +2,7 @@
 function loader(){
     let loading;
     (loading = make()).id = "LOADING";
-    showLoading = () => void add(loading);
+    showLoading = (text="") => add(loading).style.setProperty("--content", `"${text}"`);
     hideLoading = () => loading.remove();
     isPageLoading = () => loading.isConnected;
     const N = 10
@@ -42,7 +42,10 @@ function restoreSavedQuestions(){
 function say(text, voice){
     // global variable talk
     speechSynthesis.cancel();
-    [TALK.text, TALK.voice] = arguments;
+    TALK.text = text;
+    if (voice){
+        TALK.voice = voice;
+    }
     speechSynthesis.speak(TALK);
     return new Promise((resolve)=>say.resolve=resolve);
 }
