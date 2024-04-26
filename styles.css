@@ -39,7 +39,7 @@ li, label{
     margin-bottom: 10px;
     display: flex;
     gap: 10px; padding: 10px 15px;
-    padding-right: ;
+    /* padding-right: ; */
     background: aliceblue;
     align-items: center;
     justify-content: space-evenly;
@@ -50,14 +50,14 @@ li, label{
     border: 1px solid blue;
 }
 #shouldusevideo{scale: 3}
-#setup #ondout{margin: ;padding: 10px 5px}
+/* #setup #ondout{margin: padding: 10px 5px} */
 #voicechoices>label{
     align-self: end; 
 }
 #voicechoices input{
     scale: 1.5; border: 1px solid blue;
 }
-#voiceschoices h4{align-self: }
+/* #voiceschoices h4{align-self: } */
 button{
     background: #0078d4;
     color: white; border-color: aliceblue;
@@ -153,40 +153,4 @@ th{color: darkblue; text-align: -webkit-auto;}
     button{font-size: 1em; height: fit-content}
 }
 
-    /* loading */
-#loading, #loading:before{
-    width: 80px;
-    height: 80px;
-    border: none;
-    position: fixed;
-/*     display: none; */
-    top: calc(50vh - 40px);
-    left: calc(50vw - 40px); z-index: 199;
-    margin: 0;
-}
-#loading:before{
-    content: '';
-    width: 1000%; height: 1000%;
-    top: 0; left: 0; border-radius: 0;
-    background: rgb(0 0 0 / 60%);
-}
-body #loading>div{
-    width: 20px; height: 20px; border: none; background: white;
-    top: 0; left: calc(50% - 10px);var(--x); position: absolute;
-animation: blink 1s cubic-bezier(0, 0, 1, -0.12) infinite;
-    opacity: 0; z-index: 200; border-radius: 40px;
-        padding: 0; margin: 0;
-}
-@-webkit-keyframes blink{
-    0%{opacity: 1}
-    50%{opacity: 0}
-}
-#c0{transform: translate(0px, 0px);}
-#c1{transform: translate(20px, 11px);}
-#c2{transform: translate(30px, 30px)}
-#c3{transform: translate(20px, 50px)}
-#c4{transform: translate(0px, 60px)}
-#c5{transform: translate(-20px, 50px)}
-#c6{transform: translate(-30px, 30px)}
-#c7{transform: translate(-20px, 11px);}
-/* end loading */
+    
