@@ -26,6 +26,7 @@ class Interview{
         // end general
         // video specific
         this.questionBox = this.useVideo?CC:QUESTIONBOX;
+        SAY.remove();
         if (this.useVideo){
             this.layoutButton.switch.click();  // switch layout
             return;
@@ -41,7 +42,6 @@ class Interview{
         for both text and video interview
          */
         
-        SAY.remove();
     }
     event(){
         CONTROLS.onclick=(event)=>{
@@ -86,7 +86,7 @@ class Interview{
                 } else{
                     time = hours > 11?"afternoon":"morning";
                 }
-                say(`Good ${time}. ${choice(Interview.starters)}`).then(begin=>{
+                say(`Good ${time}. ${FIRSTSAY.value}`).then(begin=>{
                     this.ask(0);
                 })
             }
@@ -129,11 +129,19 @@ class Interview{
                     navigator.mediaDevices.getDisplayMedia({
                         audio: true, video: true
                     }).then(screenStream=>{
+                        // check if user followed instructions.
+                        let track = screenStream.getAudioTracks()[0];
+                        if (!track || track.label != "System Audio"){
+                            throw "Did not follow instructions";
+                        }
                         this.video(mediaStream, screenStream);
+                    }).catch(error=>{
+                        console.log(error);
+                        this.exit("You <i><b>must </b></i> share <b>entire</b> screen and system audio.");
                     })
                 }).catch((error)=>{
                     console.log(error);
-                    this.exit("Permission Denied. Click to restart.")
+                    this.exit("You should allow all permissions!");
                 })
             })
 
@@ -152,15 +160,19 @@ class Interview{
     video(mediaStream, screenStream){
         // for playing around, add the screen's stream
         // get the video track
+        this.mdStm = mediaStream;
         this.videoTrack = mediaStream.getVideoTracks()[0];
-
+        // stop screen's videoTrack
+        let screenVideo = screenStream.getVideoTracks()[0];
+        screenVideo.stop();
+        screenStream.removeTrack(screenVideo);
         // merge the two streams into one audio stream
         let audioCtx = new AudioContext()
         , destination = audioCtx.createMediaStreamDestination();
         [...arguments].forEach(stream=>{
             audioCtx.createMediaStreamSource(stream).connect(destination);
         })
-
+        this.dest = destination.stream;
         // get the one audio track from the gotten stream
         this.audioTrack= destination.stream.getAudioTracks()[0];
 
@@ -169,20 +181,11 @@ class Interview{
         // add video and audio tracks to this one stream
         ["audio", "video"].forEach(track=>{
             this.mediaStream.addTrack(this[track+"Track"]);
-        })
+        });
         this.mediaRecorder = new MediaRecorder(
             this.mediaStream, {mimeType: "video/webm; codecs=vp9"}
         );
         this.screenStream = screenStream;
-        // this.mediaStream.removeTrack(mediaStream.getAudioTracks()[0]);
-        // [this.mediaStream, this.screenStream] = arguments;
-        // ["media", "screen"].forEach(rec=>{
-        //     this[rec+"Recorder"] = new MediaRecorder(
-        //         this[rec+"Stream"], {mimeType: "video/webm; codecs=vp9"}
-        //     );
-        // })
-
-        // event
         this.mediaRecorder.ondataavailable=(event)=>{
             this.videoResponse(event);
         }
@@ -197,7 +200,7 @@ class Interview{
                 if (!bool) return;
                 REFRESHER.disabled = false;
                 if (this.useVideo){
-                    say(TEXTAFTER.value).then(resp=>{
+                    say(FINALSAY.value).then(resp=>{
                         ["screen", "media"].forEach(type=>{
                             this[type+"Stream"].getTracks().forEach(i=>i.stop());
                         })
@@ -249,7 +252,7 @@ class Interview{
         setTimeout(()=>this.questionBox.removeAttribute("disabled"), 200)
     }
     exit(message="Sorry, an error occured. You will have to restart."){
-        alert(message).then(()=>location.reload());
+        alert(message, ["RESTART"]).then(()=>location.reload());
     }
     textResponse(){
         switchScreen("TXTRESP");
@@ -272,9 +275,6 @@ class Interview{
         hideLoading();
     }
     static containers = [TEXTINTERVIEW, VIDEOINTERVIEW];
-    static starters = ["We will begin now."
-    , "Welcome to your interview.", "Make sure you are ready."
-    , "Your interview starts now.", "This interview will test your knowledge"]
     // in SETUP, do a starter.
 }
 

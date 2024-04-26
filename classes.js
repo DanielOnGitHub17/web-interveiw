@@ -58,6 +58,11 @@ class Question{
             this.box.classList.remove("highlight");
         }
         // this.mover.onmouse
+        this.text.onblur=()=>{
+            if (!this.question.trim()){
+                this.question = this._question;
+            }
+        }
     }
     delete(){
         this.box.remove();
@@ -156,28 +161,31 @@ class SearchUI{
         this.searchBox.onfocus=()=>this.list.hidden=false;
         this.searchBox.addEventListener("blur"
         , ()=>setTimeout(()=>this.list.hidden=true, 500));
-        this.searchBox.onblur=(event)=>{
-            TESTVOICE.test = getVoice(this.searchBox.value);
-        }
         this.searchBox.oninput=(event)=>{
             [...this.list.children].forEach(child=>{
                 child.hidden = !(child.textContent.toLowerCase().includes(this.searchBox.value.toLowerCase()));
             });
-            this.searchBox.onblur();
+            if (this.value){
+                TALK.voice = getVoice(this.value);
+            }
         }
         this.list.onclick=(event)=>{
             event.stopImmediatePropagation();
             event.stopPropagation();
             if (event.target.parentElement == this.list){
-                this.searchBox.value = event.target.textContent;
-                TALK.voice = getVoice(this.searchBox.value);
+                this.value = event.target.textContent;
             }
         }
     }
     get value(){
         if (this.values.includes(this.searchBox.value)){
             return this.searchBox.value;
-        }
+        };
+        return false;
+    }
+    set value(name){
+        this.searchBox.value = name;
+        TALK.voice = getVoice(name);
     }
 }
 
@@ -222,7 +230,7 @@ class Modal{
         };
         showLoading()
         if (buttons) this.changeButtons(buttons);
-        this.messageBox.textContent = message;
+        this.messageBox.innerHTML = message;
         this.modal.classList.add("shown");
         this[this.buttons[this.buttons.length-1]].focus();
         // promise

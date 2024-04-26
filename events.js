@@ -7,15 +7,9 @@ onload=()=>{
     // show only SETUP
     switchScreen("SETUP");
     // restore saved questions
-    restoreSavedQuestions();
-    // create a toggle to switch video options
-    createVideoToggle();
-    // create voice search ui
-    createVoiceSearchUI()
-
-    // initialize SpeechSynthesisUtterance
-    TALK = new SpeechSynthesisUtterance();
-    TALK.onend=()=>say.resolve(true);
+    restoreSavedData();
+    // consent to recording
+    consentToRecording();
 
     // TESTS
     // a = alert("Hi!").then(console.log);
@@ -42,20 +36,17 @@ TESTVOICE.onclick =()=>{
 
 onbeforeunload=()=>{
     speechSynthesis.cancel();
-    localStorage.questions = JSON.stringify([...QUESTIONLIST.children].map(q=>q.obj.question));
-    // TEXTAFTER.value = 
-    // TEXTBEFORE.value =
-}
+    saveData();}
 
 STARTBUTTON.onclick=()=>{
-    onbeforeunload();
+    saveData();
     questions = JSON.parse(localStorage.questions);
     if (!questions.length){
         return alert("You have to add at least one question");
     } else if (videoSwitch.on && !speechSearch.value) {
         return alert("Please, choose a voice!");
     }
-    confirm("Are you sure you want to begin?")
+    confirm("Are you sure you want to begin?", ["No", "Yes"])
     .then(resp=>{
         if (resp){
             (

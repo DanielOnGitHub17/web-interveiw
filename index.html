@@ -41,15 +41,21 @@
                 <span>Toggle video usage: </span>
             </div>
             <div id="VIDEOSETTINGS">
-                <!-- show video on how to use video (permissions) -->
-                <div>
-                    <label for="TEXTAFTER"> Input text to say after interview:</label>
-                    <input type="text" id="TEXTAFTER" value="This interview has ended">
-                </div>
+                <ul>
+                    <li>
+                        <label for="FIRSTSAY">Say at the beginning of the interview: </label>
+                        <input type="text" id="FIRSTSAY">
+                    </li>
+                    <li>
+                        <label for="FINALSAY">Say at the end of interview:</label>
+                        <input type="text" id="FINALSAY">
+                    </li>
+                </ul>
                 <div id="VOICETHINGS">
                     <button id="TESTVOICE">TEST</button>
                     <span>Choose Voice: </span>
                     <!-- add other controls: pitch/etc -->
+                    <!-- search ui for voices will go here -->
                 </div>
             </div>
             <button id="STARTBUTTON" class="major">START</button>
@@ -59,7 +65,7 @@
             <!-- flexbox, could be row/column -->
             <!-- inner also flex, flex-flow: inverse(parent) -->
             <video id="VIDEO"></video>
-            <p id="CC">Text from SpeechRecognition will be displayed here</p>
+            <p id="CC">Stay focused. You can do this!</p>
             <!-- space for controls class -->
         </div>
 

@@ -31,15 +31,29 @@ function createVoiceSearchUI(){
     ) 
 }
 
-// well...
-function restoreSavedQuestions(){
+// for "data persistence"...
+function saveData(){
+    // questions
+    localStorage.questions = JSON.stringify([...QUESTIONLIST.children].map(q=>q.obj.question));
+    // FIRST|FINAL-->SAY
+    ["FIRSTSAY", "FINALSAY"].forEach(pos=>{
+        if (window[pos]){
+            localStorage[pos] = window[pos].value;
+        }
+    })
+}
+function restoreSavedData(){
     const QUESTIONS = localStorage.questions?JSON.parse(localStorage.questions):[];
     QUESTIONS.forEach(q=>(new Question(q)));
-
+    ["FIRSTSAY", "FINALSAY"].forEach(pos=>{
+        if (localStorage[pos]){
+            window[pos].value = localStorage[pos];
+        }
+    })
 }
 
 // say function to speak
-function say(text, voice){
+function say(text="", voice){
     // global variable talk
     speechSynthesis.cancel();
     TALK.text = text;
@@ -55,4 +69,30 @@ function say(text, voice){
 function getVoice(name){
     return speechSynthesis.getVoices().find(i=>i.name == name);
 }
-// the rest will be at setup.js
+
+// get user consent for recording screen and making video (remove)
+function consentToRecording(){
+    confirm(`
+    To use this app's video feature, you must share your entire screen
+    <br> and allow the app to record system audio<br>
+    The app does not store recorded data after usage.<br>
+    <b>Your privacy is paramount</b>
+    `, ["decline", "agree"]).then(bool=>{
+        // create a toggle to switch video options
+        createVideoToggle();
+        if (bool){
+            // create voice search ui
+            createVoiceSearchUI()
+            if (localStorage.voice){
+                speechSearch.value = localStorage.voice;
+            }
+        
+            // initialize SpeechSynthesisUtterance
+            TALK = new SpeechSynthesisUtterance();
+            TALK.onend=()=>say.resolve(true);
+        } else{
+            videoSwitch.switch.click();
+            SHOULDVIDEO.remove();
+        }
+    })
+}

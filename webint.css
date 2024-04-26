@@ -388,6 +388,9 @@ body>div{
     margin-top: 20px;
     padding-top: 10px;
 }
+#VIDEOSETTINGS>ul{
+    list-style-type: none;
+}
 #VOICETHINGS{
     display: flex;
     gap: 20px;
