@@ -33,6 +33,14 @@ class Interview{
         // end video specific
 
         PLAYORPAUSE.remove();
+        /* this will be refactored to sth else: SAY.textcontent=REWRITE...
+        there will be up to three pregenerated text for answer
+        probably in this.suggestions = ...[[], []]
+        this.get:suggestion():
+        choice(this.suggestions[this.index])
+        for both text and video interview
+         */
+        
         SAY.remove();
     }
     event(){
@@ -50,8 +58,8 @@ class Interview{
                     break;
 
                 case "PLAYORPAUSE":
-                    target.textContent = target.textContent == "PAUSE"?"RESUME":"PAUSE";
                     this[target.textContent.toLowerCase()]();
+                    target.textContent = target.textContent == "PAUSE"?"RESUME":"PAUSE";
                     break;
             
                 default:
@@ -60,16 +68,10 @@ class Interview{
         }
         if (this.useVideo){
             // TALK.voice = getVoice(speechSearch.value);
-            TALK.onstart=()=>{
+            TALK.onstart = TALK.onresume = VIDEO.onpause = ()=>{
                 this.disenable();
                 // disable repeat, previous, next
             }
-            TALK.onpause=()=>{
-
-                this.disenable();
-                // switch between pause and RESUME, pause video
-                // disable previous, next, repeat (onstart())
-            };
             TALK.onerror=()=>console.log;
 
             // VIDEO event (try onload too, "DOMCONTENTLOADED...")
@@ -124,7 +126,11 @@ class Interview{
                 navigator.mediaDevices.getUserMedia({
                     audio: true, video: true, facingMode: {exact: "user"}
                 }).then(mediaStream=>{
-                    this.video(mediaStream);
+                    navigator.mediaDevices.getDisplayMedia({
+                        audio: true, video: true
+                    }).then(screenStream=>{
+                        this.video(mediaStream, screenStream);
+                    })
                 }).catch((error)=>{
                     console.log(error);
                     this.exit("Permission Denied. Click to restart.")
@@ -143,16 +149,44 @@ class Interview{
         }
         this.ask(0);
     }
-    video(mediaStream){
-        this.mediaStream = mediaStream;
-        this.videoRecorder = new MediaRecorder(mediaStream, {
-            mimeType: "video/webm; codecs=vp9"
-        });
+    video(mediaStream, screenStream){
+        // for playing around, add the screen's stream
+        // get the video track
+        this.videoTrack = mediaStream.getVideoTracks()[0];
+
+        // merge the two streams into one audio stream
+        let audioCtx = new AudioContext()
+        , destination = audioCtx.createMediaStreamDestination();
+        [...arguments].forEach(stream=>{
+            audioCtx.createMediaStreamSource(stream).connect(destination);
+        })
+
+        // get the one audio track from the gotten stream
+        this.audioTrack= destination.stream.getAudioTracks()[0];
+
+        // create a new media stream to be used
+        this.mediaStream = new MediaStream();
+        // add video and audio tracks to this one stream
+        ["audio", "video"].forEach(track=>{
+            this.mediaStream.addTrack(this[track+"Track"]);
+        })
+        this.mediaRecorder = new MediaRecorder(
+            this.mediaStream, {mimeType: "video/webm; codecs=vp9"}
+        );
+        this.screenStream = screenStream;
+        // this.mediaStream.removeTrack(mediaStream.getAudioTracks()[0]);
+        // [this.mediaStream, this.screenStream] = arguments;
+        // ["media", "screen"].forEach(rec=>{
+        //     this[rec+"Recorder"] = new MediaRecorder(
+        //         this[rec+"Stream"], {mimeType: "video/webm; codecs=vp9"}
+        //     );
+        // })
+
         // event
-        this.videoRecorder.ondataavailable=(event)=>{
+        this.mediaRecorder.ondataavailable=(event)=>{
             this.videoResponse(event);
         }
-        this.videoRecorder.start();
+        this.mediaRecorder.start();
         VIDEO.srcObject = this.mediaStream;
         VIDEO.muted =  true;
     }
@@ -164,8 +198,10 @@ class Interview{
                 REFRESHER.disabled = false;
                 if (this.useVideo){
                     say(TEXTAFTER.value).then(resp=>{
-                        this.mediaStream.getTracks().forEach(i=>i.stop());
-                        this.videoRecorder.stop();
+                        ["screen", "media"].forEach(type=>{
+                            this[type+"Stream"].getTracks().forEach(i=>i.stop());
+                        })
+                        this.mediaRecorder.stop();
                     });
                     return;
                 }
@@ -195,9 +231,18 @@ class Interview{
     }
     pause(){
         speechSynthesis.pause();
+        VIDEO.pause();
+        this.mediaRecorder.pause();
+        // pause audio recorder (screen recording)
     }
     resume(){
+        // resume audio recorder (screen recording)
+        this.mediaRecorder.resume();
+        VIDEO.play();
         speechSynthesis.resume();
+        if (!speechSynthesis.speaking && !speechSynthesis.paused){
+            this.disenable(false);
+        }
     }
     blur(){
         this.questionBox.setAttribute("disabled", "true");
@@ -219,7 +264,7 @@ class Interview{
     videoResponse(event){
         showLoading("making video...");
         switchScreen("VIDRESP");
-        this.videoFile = new Blob([event.data], {type: "video/webm"});
+        this.videoFile = event.data;
         VIDEORESPONSE.src = URL.createObjectURL(this.videoFile);
         (SAVE.downloader = make('a')).download = "ai-interview.webm";
         SAVE.downloader.href = VIDEORESPONSE.src;
