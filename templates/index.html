@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -5,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>AI interview</title>
         <style>
-            @import url(webint.css);
+            @import url("{% static 'webint.css' %}");
         </style>
     </head>
 
@@ -93,11 +94,11 @@
             <button id="SAVE" class="major">SAVE</button>
         </div>
 
-        <script src="funcs.js"></script>
-        <script src="classes.js"></script>
-        <script src="scripts.js"></script>
-        <script src="interview.js"></script>
-        <script src="events.js"></script>
+        <script src="{% static 'funcs.js' %}"></script>
+        <script src="{% static 'classes.js' %}"></script>
+        <script src="{% static 'scripts.js' %}"></script>
+        <script src="{% static 'interview.js' %}"></script>
+        <script src="{% static 'events.js' %}"></script>
     </body>
 
 </html>

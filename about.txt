@@ -1,3 +1,0 @@
-Made By Daniel Enesi. Do not misuse.
-
-Asks interview questions and records answers, either in text or in video.
