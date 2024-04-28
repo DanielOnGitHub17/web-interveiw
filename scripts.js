@@ -81,6 +81,14 @@ function consentToRecording(){
         // create a toggle to switch video options
         createVideoToggle();
         if (bool){
+            // remove if solution found
+            if (isPhone()){
+                throw alert(`
+                Sorry, but you cannot use a phone for the video interview.<br>
+                Phone browsers do not support screen recording.
+                Please, use a laptop to access this feature.
+                `)
+            }
             // create voice search ui
             createVoiceSearchUI()
             if (localStorage.voice){
@@ -91,8 +99,18 @@ function consentToRecording(){
             TALK = new SpeechSynthesisUtterance();
             TALK.onend=()=>say.resolve(true);
         } else{
+            throw "Declined"
+        }
+        // if a phone do something with speech
+        if (isPhone()){
+            speechSynthesis.getVoices = ()=> [{name: "Default voice"}];
+        }
+    }).catch(error=>{
             videoSwitch.switch.click();
             SHOULDVIDEO.remove();
-        }
     })
+}
+
+function isPhone(){
+    return navigator.userAgentData.mobile;
 }

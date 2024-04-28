@@ -140,7 +140,8 @@ h2{
     border: none;
     position: fixed;
     top: calc(50vh - 40px);
-    left: calc(50vw - 40px); z-index: 20;
+    left: calc(50vw - 40px);
+    z-index: 20;
     margin: 0;
 }
 #LOADING:before{
@@ -246,13 +247,10 @@ select:active, select:focus{
     border: var(--b);
     border-width: 3px;
     border-radius: 0.8em;
-    /* display: none; */
     flex-flow: row;
     width: 18em;
     max-width: 80vw;
     position: fixed;
-    /* top: 0; */
-    left: calc(50% - 9em);
     flex-wrap: wrap;
     z-index: 23;
     background-color: white;
@@ -549,9 +547,6 @@ or reroute by bitly
 */
 
 @media screen and (max-width: 25em){
-    .modal{    
-        left: calc(50% - 40vw);
-    }
     [id*="INTERVIEW"].side{
         display: flex;
     }

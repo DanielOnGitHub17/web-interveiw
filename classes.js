@@ -129,7 +129,7 @@ class Help{
 }
 
 class SearchUI{
-    // to specific
+    // to0 specific to speech
     constructor(where, values){
         [this.container, this._values] = arguments;
         this.build();
@@ -154,10 +154,16 @@ class SearchUI{
     event(){
         // change onvoice... to event variable/not
         speechSynthesis.onvoiceschanged=(event)=>{
+            [...this.list.children].forEach(child=>{
+                this.list.removeChild(child);
+            })
             let voices = this.values;
             for (let i in voices){
                 add(make("li"), this.list).textContent = voices[i];
             }
+        }
+        if (isPhone()){
+            speechSynthesis.onvoiceschanged();
         }
         this.searchBox.onfocus=()=>this.list.hidden=false;
         this.searchBox.addEventListener("blur"
@@ -166,7 +172,7 @@ class SearchUI{
             [...this.list.children].forEach(child=>{
                 child.hidden = !(child.textContent.toLowerCase().includes(this.searchBox.value.toLowerCase()));
             });
-            if (this.value){
+            if (this.value && isPhone()){
                 TALK.voice = getVoice(this.value);
             }
         }
@@ -186,7 +192,9 @@ class SearchUI{
     }
     set value(name){
         this.searchBox.value = name;
-        TALK.voice = getVoice(name);
+        if (!isPhone()){
+            TALK.voice = getVoice(name);
+        }
     }
 }
 

@@ -31,7 +31,7 @@ RESTOREQUESTION.onclick=()=>Question.restoreLast();
 TESTVOICE.onclick =()=>{
     speechSynthesis.cancel();
     if (!speechSearch.value) return;
-    say(`Hi, this is speech synthesis, using ${TALK.voice.name}`)
+    say(`Hi, this is speech synthesis, using ${isPhone()?"Default voice":TALK.voice.name}`)
 }
 
 onbeforeunload=()=>{
@@ -59,3 +59,8 @@ STARTBUTTON.onclick=()=>{
         }
     })
 }
+
+onerror=(error)=>{
+    alert(error).then(()=>location.reload())
+}
+// setTimeout(()=>{alert(navigator.mediaDevices.getDisplayMedia)}, 5000)
