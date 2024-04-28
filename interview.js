@@ -126,6 +126,11 @@ class Interview{
                 navigator.mediaDevices.getUserMedia({
                     audio: true, video: true, facingMode: {exact: "user"}
                 }).then(mediaStream=>{
+                    if (isPhone()){
+                        // ha! (back to old implementation of spe)
+                        this.video(mediaStream);
+                        return
+                    } 
                     navigator.mediaDevices.getDisplayMedia({
                         audio: true, video: true
                     }).then(screenStream=>{
@@ -160,28 +165,32 @@ class Interview{
     video(mediaStream, screenStream){
         // for playing around, add the screen's stream
         // get the video track
-        this.mdStm = mediaStream;
-        this.videoTrack = mediaStream.getVideoTracks()[0];
-        // stop screen's videoTrack
-        let screenVideo = screenStream.getVideoTracks()[0];
-        screenVideo.stop();
-        screenStream.removeTrack(screenVideo);
-        // merge the two streams into one audio stream
-        let audioCtx = new AudioContext()
-        , destination = audioCtx.createMediaStreamDestination();
-        [...arguments].forEach(stream=>{
-            audioCtx.createMediaStreamSource(stream).connect(destination);
-        })
-        this.dest = destination.stream;
-        // get the one audio track from the gotten stream
-        this.audioTrack= destination.stream.getAudioTracks()[0];
+        if (screenStream){
+            this.mdStm = mediaStream;
+            this.videoTrack = mediaStream.getVideoTracks()[0];
+            // stop screen's videoTrack
+            let screenVideo = screenStream.getVideoTracks()[0];
+            screenVideo.stop();
+            screenStream.removeTrack(screenVideo);
+            // merge the two streams into one audio stream
+            let audioCtx = new AudioContext()
+            , destination = audioCtx.createMediaStreamDestination();
+            [...arguments].forEach(stream=>{
+                audioCtx.createMediaStreamSource(stream).connect(destination);
+            })
+            this.dest = destination.stream;
+            // get the one audio track from the gotten stream
+            this.audioTrack= destination.stream.getAudioTracks()[0];
 
-        // create a new media stream to be used
-        this.mediaStream = new MediaStream();
-        // add video and audio tracks to this one stream
-        ["audio", "video"].forEach(track=>{
-            this.mediaStream.addTrack(this[track+"Track"]);
-        });
+            // create a new media stream to be used
+            this.mediaStream = new MediaStream();
+            // add video and audio tracks to this one stream
+            ["audio", "video"].forEach(track=>{
+                this.mediaStream.addTrack(this[track+"Track"]);
+            });
+        } else{
+            this.mediaStream = mediaStream;
+        }
         this.mediaRecorder = new MediaRecorder(
             this.mediaStream, {mimeType: "video/webm; codecs=vp9"}
         );
@@ -204,7 +213,7 @@ class Interview{
                 REFRESHER.disabled = false;
                 if (this.useVideo){
                     say(FINALSAY.value).then(resp=>{
-                        ["screen", "media"].forEach(type=>{
+                        (isPhone()?["media"]:["screen", "media"]).forEach(type=>{
                             this[type+"Stream"].getTracks().forEach(i=>i.stop());
                         })
                         this.mediaRecorder.stop();
