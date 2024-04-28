@@ -97,7 +97,7 @@ class Switch{
         // this.switch.tabIndex = -1;
     }
     event(){
-        this.switch.onclick = (event)=>{
+        this.holder.onclick = (event)=>{
             event.preventDefault();
             this.holder.classList.contains("off")
             ?this.holder.classList.remove("off")
@@ -146,6 +146,7 @@ class SearchUI{
         add((this.searchBox = make("input"))
         , add((this.box = make())
         , this.container)).type = "text";
+        this.searchBox.placeholder = "Tap to select a voice"
         this.box.className = "searchui";
         add((this.list = make("ul")), this.box).hidden = true;
         this.list.size = 20
