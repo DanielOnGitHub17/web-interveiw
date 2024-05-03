@@ -1,11 +1,19 @@
 from django.shortcuts import render
+from django.http import HttpResponse, Http404
+from django.views import View
+from .models import Interview
 
-# Create your views here.
+
+interview_parameters = ("")
 
 def app_view(request):
     return render(request, "index.html", {})
 
-def saved_view(request, saved):
-    if saved:
+
+class Saved(View):
+    def get(self, request):
+        return ""
+    
+    def post(self, request):
         context = {}
-    return render(request, "index.html", context)
+        return render(request, "index.html", context)

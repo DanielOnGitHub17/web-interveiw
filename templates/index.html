@@ -30,11 +30,32 @@
         <button id="REFRESHER" disabled onclick="location=location">RESTART</button>
         <h2>AI interview</h2>
         <div id="SETUP">
+            <form id="AIGEN" action="/ai/questions/" method="post" aria-sort="topic">
+                <h4>Use AI to generate questions.</h4>
+                <div id="AISWITCHOLD">
+                    <span>Toggle between topic and text input</span>
+                </div>
+                {% csrf_token %}
+                <ul>
+                    <li id="TOPICHOLD">
+                        <input id="TOPIC" name="topic" type="text" minlength="25" maxlength="100" placeholder="Enter a topic you want to be quizzed on">
+                    </li>
+                    <li id="TEXTHOLD">
+                        <textarea id="TEXT" name="text" minlength="200" maxlength="1000" placeholder="input text you want to be interviewed on"></textarea>
+                    </li>
+                    <li id="SUBMITHOLD">
+                        <label for="QUESTNUMBER">How many questions do you wish to generate: </label>
+                        <input id="QUESTNUMBER" type="number" name="questno" min="8" max="50" required>
+                        <button id="GEN">Generate questions</button>
+                    </li>
+                    
+                </ul>
+            </form>
             <div id="SETUPDESC">
-                <span>Questions the AI should ask you</span>
+                <b>Add questions manually using + button</b>
                 <div>
-                    <button id="ADDQUESTION" class="icon">+</button>
-                    <button id="RESTOREQUESTION" class="icon">=</button>
+                    <button id="ADDQUESTION" class="icon" title="Click to add a new question">+</button>
+                    <button id="RESTOREQUESTION" class="icon" title="click to restore last deleted question / use ctrl+B">=</button>
                 </div>
             </div>
             <ul id="QUESTIONLIST"></ul>
@@ -70,10 +91,7 @@
         </div>
 
         <div id="TEXTINTERVIEW">
-            <p id="QUESTIONBOX">
-                If you had two people, one of them who knows your name.
-                How will you tell your name to the other person?
-            </p>
+            <p id="QUESTIONBOX"></p>
             <textarea id="ANSWERBOX" required rows="3" cols="40" placeholder="respond here"></textarea>
             <!-- space for controls class -->
         </div>

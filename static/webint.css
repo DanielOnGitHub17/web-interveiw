@@ -91,7 +91,7 @@ button:active{
 /* end buttons */
 
 /* input text */
-[type="text"], textarea{
+[type="text"], textarea, [type="number"]{
     padding: 7px 0;
     border: none;
     border-bottom: var(--b);
@@ -310,11 +310,47 @@ body>div{
 #SETUPDESC>button{
     font-size: 1em;
 }
+h4{
+    margin: 0;
+    padding: 0;
+}
+#AIGEN{
+    margin: 0;
+    padding: 0;
+}
+#AIGEN ul{
+    display: flex;
+    flex-flow: column;
+    margin: 10px 0;
+    list-style-type: none;
+    padding: 0;
+    gap: 5px;
+}
+#TOPICHOLD{
+    display: flex;
+    flex-flow: column;
+}
+#AIGEN [type="text"], #AIGEN textarea{
+    resize: none;
+    width: 100%;
+}
+#AIGEN textarea{
+    height: 50vh;
+}
 #QUESTIONLIST{
     display: flex;
     flex-flow: column;
     gap: 5px;
     list-style-type: decimal;
+}
+#AIGEN[aria-sort="topic"] #TEXTHOLD{
+    display: none;
+}
+#AIGEN[aria-sort="text"] #TOPICHOLD{
+    display: none;
+}
+#QUESTNUMBER{
+    text-align: right;
 }
 
 #QUESTIONLIST>li{
@@ -348,7 +384,7 @@ body>div{
     outline-color: red;
     /* display: none; */
 }
-#SHOULDVIDEO{
+#SHOULDVIDEO, #AISWITCHOLD{
     display: flex;
     gap: 10px;
     align-items: center;

@@ -10,7 +10,10 @@ onload=()=>{
     restoreSavedData();
     // consent to recording
     consentToRecording();
-
+    // create topic or text switch
+    createTextOrTopic();
+    // create AI questions
+    setupAIQuestions();
     // TESTS
     // a = alert("Hi!").then(console.log);
     // videoSwitch.switch.click()

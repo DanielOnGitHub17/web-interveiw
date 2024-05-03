@@ -23,6 +23,12 @@ function createVideoToggle(){
         , VIDEOSETTINGS.style, "display", ["none", ""])
 }
 
+// create text or topic switch
+function createTextOrTopic(){
+    textTopic = new Switch(AISWITCHOLD
+    , AIGEN, "ariaSort", ["topic", "text"])
+}
+
 // create search ui for voices
 function createVoiceSearchUI(){
     speechSearch = new SearchUI(VOICETHINGS
@@ -95,4 +101,58 @@ function consentToRecording(){
             SHOULDVIDEO.remove();
         }
     })
+}
+
+// for AI
+
+// get questions. Monitor disableness of button
+function setupAIQuestions() {
+    let rep = AIGEN.reportValidity.bind(AIGEN);
+    AIGEN.reportValidity = ()=>{
+        return rep() &&
+        (textTopic.on?TOPIC:TEXT).value
+    }
+    AIGEN.onsubmit = (event)=>{
+        event.preventDefault();
+        if (AIGEN.reportValidity()){
+            GEN.disabled = true;
+            alert("Questions are being generated in the background. They will appear soon.");
+            let type = (textTopic.on?"topic":"text")
+            , data = new FormData(AIGEN),
+            body = {};
+            body[type] = data.get(type);
+            console.log(body, type);
+            // flag
+            DONE = false
+            fetch("/ai/questions/", {
+                method: "post",
+                headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getS(`[name=csrfmiddlewaretoken]`).value
+                },
+            
+            //make sure to serialize your JSON body
+                body: JSON.stringify(body)
+            }).then(response=>{
+                if (response.status != 200){
+                    throw "rejected with error "+response.statusText
+                }
+                response.json().then(obj=>{
+                    console.log(obj);
+                    if (["Passed", "Failed"].includes(obj)){
+                        throw "rejected "+obj
+                    }
+                    alert("Questions will now be added");
+                    Interview.generateQuestions(obj)
+                }).catch(error=>{
+                    console.log(error);
+                    alert("Failed to generate questions!");
+                })
+            }).catch(error=>{
+                console.log(error);
+                alert("Failed to generate questions!");
+            });
+        }
+    }
 }

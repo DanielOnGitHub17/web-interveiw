@@ -28,7 +28,7 @@ class Interview{
         this.questionBox = this.useVideo?CC:QUESTIONBOX;
         SAY.remove();
         if (this.useVideo){
-            this.layoutButton.switch.click();  // switch layout
+            // this.layoutButton.switch.click();  // switch layout
             return;
         }
         // end video specific
@@ -195,6 +195,9 @@ class Interview{
     }
     next(){
         let ended =this.index >= this.questions.length - 1
+        if (!this.useVideo && ANSWERBOX.value.trim() == ""){
+            return alert("Enter a response to proceed!");
+        }
         if (ended){
             confirm("Do you want to complete your interview?").then(bool=>{
                 if (!bool) return;
@@ -214,8 +217,6 @@ class Interview{
         }
         if (this.useVideo){
             // maybe check if speechrecog text is plenty enough
-        } else if (ANSWERBOX.value.trim() == ""){
-            return alert("Enter a response to proceed!");
         } else{
             this.blur();
         }
@@ -275,6 +276,19 @@ class Interview{
         hideLoading();
     }
     static containers = [TEXTINTERVIEW, VIDEOINTERVIEW];
+    static aiGeneratedQuestions = [];
+    static generateQuestions(obj){
+        Interview.aiGeneratedQuestions = Interview.aiGeneratedQuestions.concat(obj);
+        // make it animated
+        let questIndex = 0;
+        let animateQUestions = setInterval(()=>{
+            if (!obj[questIndex]){
+                clearInterval(animateQUestions);
+                DONE = true
+            }
+            new Question(obj[questIndex++]);
+        })
+    }
     // in SETUP, do a starter.
 }
 
