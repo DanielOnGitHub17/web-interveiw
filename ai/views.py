@@ -7,16 +7,17 @@ import json
 
 def questions_from(request):
     result = "Failed"
-    details = request.POST
-    print(details)
+    details = json.loads(request.body)
+    number = number = details["number"] if "number" in details else 10
     try:
         if "topic" in details:
-            result = questions_from_topic(details["topic"])
+            result = questions_from_topic(details["topic"], number)
         elif "text" in details:
-            result = questions_from_text(details["text"])
+            result = questions_from_text(details["text"], number)
         else:
             result = "Passed"
     except Exception as error:
+        print(error)
         with open("../../../errors.txt", 'a') as file:
             file.write(f"{str(error)}\n")
     return HttpResponse(json.dumps(result))

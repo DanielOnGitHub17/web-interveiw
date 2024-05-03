@@ -121,7 +121,7 @@ function setupAIQuestions() {
             , data = new FormData(AIGEN),
             body = {};
             body[type] = data.get(type);
-            console.log(body, type);
+            body["number"] = data.get("questno");
             // flag
             DONE = false
             fetch("/ai/questions/", {
