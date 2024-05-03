@@ -139,12 +139,11 @@ function setupAIQuestions() {
                     throw "rejected with error "+response.statusText
                 }
                 response.json().then(obj=>{
-                    console.log(obj);
                     if (["Passed", "Failed"].includes(obj)){
                         throw "rejected "+obj
                     }
                     alert("Questions will now be added");
-                    Interview.generateQuestions(obj)
+                    Interview.generateQuestions(JSON.parse(obj)["questions"])
                 }).catch(error=>{
                     console.log(error);
                     alert("Failed to generate questions!");
