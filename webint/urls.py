@@ -20,5 +20,6 @@ from django.urls import include, path
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", include("frontend.urls"), name="Front-End View"),
-    path("ai/", include("ai.urls"), name="AI"),
+    path("ai/", include("ai.urls"), name="AI Prowess"),
+    path("share/", include("share.urls"), name="Shared Interviews"),
 ]

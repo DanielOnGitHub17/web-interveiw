@@ -24,5 +24,9 @@ function randBtw(a, b){
     return a+parseInt((b-a)*Math.random());
 }
 
-// choice
-choice = (array)=>array[randBtw(0, array.length)]
+// others for data handling
+let choice = (array)=>array[randBtw(0, array.length)]
+  , jsonStr = (obj)=>JSON.stringify(obj)
+  , jsonObj = (str)=>JSON.parse(str)
+  , copy = (obj)=>jsonObj(jsonStr(obj))
+  , local = (item, value)=>value?localStorage.setItem(item, value):localStorage[item];

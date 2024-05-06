@@ -39,21 +39,30 @@ function createVoiceSearchUI(){
 
 // for "data persistence"...
 function saveData(){
-    // questions
-    localStorage.questions = JSON.stringify([...QUESTIONLIST.children].map(q=>q.obj.question));
+    if (window.SHARED) return;
+    // copy interview (in case it will be used to get originals)
+    let interviewObj = copy(INTERVIEW);
+    interviewObj.questions = [...QUESTIONLIST.children].map(q=>q.obj.question);
     // FIRST|FINAL-->SAY
-    ["FIRSTSAY", "FINALSAY"].forEach(pos=>{
-        if (window[pos]){
-            localStorage[pos] = window[pos].value;
+    ["FIRSTSAY", "FINALSAY"].forEach(phrase=>{
+        if (window[phrase]){
+            interviewObj[phrase] = window[phrase].value;
         }
-    })
+    });
+    local("AI_INTERVIEW", jsonStr(interviewObj));
+}
+onerror=(event)=>{
+    localStorage.error = String(event);
 }
 function restoreSavedData(){
-    const QUESTIONS = localStorage.questions?JSON.parse(localStorage.questions):[];
+    // check if interview is a shared page
+    INTERVIEW = window.SHARED?window.SHARED:
+    local("AI_INTERVIEW")?jsonObj(local("AI_INTERVIEW")):{};
+    const QUESTIONS = INTERVIEW.questions?INTERVIEW.questions:[];
     QUESTIONS.forEach(q=>(new Question(q)));
     ["FIRSTSAY", "FINALSAY"].forEach(pos=>{
-        if (localStorage[pos]){
-            window[pos].value = localStorage[pos];
+        if (INTERVIEW[pos]){
+            window[pos].value = INTERVIEW[pos];
         }
     })
 }
@@ -88,10 +97,7 @@ function consentToRecording(){
         createVideoToggle();
         if (bool){
             // create voice search ui
-            createVoiceSearchUI()
-            if (localStorage.voice){
-                speechSearch.value = localStorage.voice;
-            }
+            createVoiceSearchUI();
         
             // initialize SpeechSynthesisUtterance
             TALK = new SpeechSynthesisUtterance();
