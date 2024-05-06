@@ -34,12 +34,12 @@ def can_use():
     now, last_used = datetime.now().timestamp(), config["last_used"]
     time_past = now - last_used
     usage = config["usage"] 
-    # used in the past 40 seconds
-    if time_past < 40 or usage >= 40:
-        return False
-    elif datetime.fromtimestamp(last_used).date() != datetime.now().date():
+    if datetime.fromtimestamp(last_used).date() != datetime.now().date():
         # reset usage: another day
         save_config(config, usage=0)
+    # used in the past 40 seconds or usage is okay for today
+    if time_past < 40 or usage >= 40:
+        return False
     # reset last_used as last called
     save_config(config, last_used=datetime.now().timestamp(), usage=usage+1)
     return True
