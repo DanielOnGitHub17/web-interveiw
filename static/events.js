@@ -25,7 +25,7 @@ addEventListener("keyup", (event)=>{
     }
 })
 // add question button
-ADDQUESTION.onclick=()=>new Question
+ADDQUESTION.onclick=()=>(new Question).text.focus();
 
 // restore question button
 RESTOREQUESTION.onclick=()=>Question.restoreLast();
