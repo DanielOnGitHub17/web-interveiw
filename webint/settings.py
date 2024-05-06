@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "webint",
     "frontend",
-    "ai"
+    "ai",
+    "share",
 ]
 
 MIDDLEWARE = [
