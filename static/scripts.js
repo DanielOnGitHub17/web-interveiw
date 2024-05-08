@@ -29,14 +29,14 @@ function setupAIQuestions() {
     let rep = AIGEN.reportValidity.bind(AIGEN);
     AIGEN.reportValidity = ()=>{
         return rep() &&
-        (textTopic.on?TOPIC:TEXT).value
+        (textTopic.on ? TOPIC : TEXT).value
     }
     AIGEN.onsubmit = (event)=>{
         event.preventDefault();
         if (AIGEN.reportValidity()){
             GEN.disabled = true;
             alert("Questions are being generated in the background. They will appear soon.");
-            let type = (textTopic.on?"topic":"text")
+            let type = (textTopic.on ? "topic" : "text")
             , data = new FormData(AIGEN),
             body = {};
             body[type] = data.get(type);
@@ -119,25 +119,26 @@ function createVoiceSearchUI(){
 // for "data persistence"...
 function saveData(){
     if (window.SHARED) return;
-    // copy interview (in case it will be used to get originals)
-    let interviewObj = copy(INTERVIEW);
-    interviewObj.questions = [...QUESTIONLIST.children].map(q=>q.obj.question);
+    INTERVIEW.questions = [...QUESTIONLIST.children].map(q=>q.obj.question);
     // FIRST|FINAL-->SAY
     ["FIRSTSAY", "FINALSAY"].forEach(phrase=>{
         if (window[phrase]){
-            interviewObj[phrase] = window[phrase].value;
+            INTERVIEW[phrase] = window[phrase].value;
         }
     });
-    local("AI_INTERVIEW", jsonStr(interviewObj));
+    local("AI_INTERVIEW", jsonStr(INTERVIEW));
 }
 onerror=(event)=>{
     localStorage.error = String(event);
 }
 function restoreSavedData(){
     // check if interview is a shared page
-    INTERVIEW = window.SHARED?window.SHARED:
-    local("AI_INTERVIEW")?jsonObj(local("AI_INTERVIEW")):{};
-    const QUESTIONS = INTERVIEW.questions?INTERVIEW.questions:[];
+    if (window.SHARED){
+        INTERVIEW = window.SHARED
+    }else{
+        INTERVIEW = local("AI_INTERVIEW") ? jsonObj(local("AI_INTERVIEW")) : {};
+    }
+    const QUESTIONS = INTERVIEW.questions ? INTERVIEW.questions : [];
     QUESTIONS.forEach(q=>(new Question(q)));
     ["FIRSTSAY", "FINALSAY"].forEach(pos=>{
         if (INTERVIEW[pos]){

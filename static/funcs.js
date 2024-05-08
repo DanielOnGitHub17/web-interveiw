@@ -29,4 +29,4 @@ let choice = (array)=>array[randBtw(0, array.length)]
   , jsonStr = (obj)=>JSON.stringify(obj)
   , jsonObj = (str)=>JSON.parse(str)
   , copy = (obj)=>jsonObj(jsonStr(obj))
-  , local = (item, value)=>value?localStorage.setItem(item, value):localStorage[item];
+  , local = (item, value)=>value ? localStorage.setItem(item, value) : localStorage[item];

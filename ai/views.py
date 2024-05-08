@@ -9,6 +9,7 @@ def questions_from(request):
     result = "Failed"
     details = json.loads(request.body)
     number = number = details["number"] if "number" in details else 10
+    print(details)
     try:
         if "topic" in details:
             result = questions_from_topic(details["topic"], number)
@@ -20,6 +21,7 @@ def questions_from(request):
         print(error)
         with open("../../../errors.txt", 'a') as file:
             file.write(f"{str(error)}\n")
+    print(result)
     return HttpResponse(json.dumps(result))
 
 def questions_rewrite(request):

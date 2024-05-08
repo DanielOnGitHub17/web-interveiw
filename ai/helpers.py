@@ -1,7 +1,7 @@
 import json
 from datetime import datetime
 
-import google.generativeai as genai
+import google.generativeai as genai # type: ignore
 
 
 with open("../config.json") as file:

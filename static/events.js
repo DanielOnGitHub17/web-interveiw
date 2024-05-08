@@ -39,12 +39,12 @@ TESTVOICE.onclick =()=>{
 
 onbeforeunload=()=>{
     speechSynthesis.cancel();
-    saveData();}
+    saveData();
+}
 
 STARTBUTTON.onclick=()=>{
     saveData();
-    questions = JSON.parse(localStorage.questions);
-    if (!questions.length){
+    if (!INTERVIEW.questions.length){
         return alert("You have to add at least one question");
     } else if (videoSwitch.on && !speechSearch.value) {
         return alert("Please, choose a voice!");
@@ -54,7 +54,7 @@ STARTBUTTON.onclick=()=>{
         if (resp){
             (
                 interview = new Interview(
-                    JSON.parse(localStorage.questions)
+                    INTERVIEW.questions
                     , videoSwitch.on
         )).start();
         } else{
@@ -62,3 +62,17 @@ STARTBUTTON.onclick=()=>{
         }
     })
 }
+
+// video / table download
+SAVE.onclick = ()=>{
+    confirm("Save as?", ["Table", "Video"])
+    .then(bool=>{
+        if (bool){
+            SAVE.downloader.click();
+        }else{
+            switchScreen("TXTRESP");
+            print();
+            switchScreen("VIDRESP");
+        }
+    })
+};

@@ -99,21 +99,20 @@ class Switch{
     event(){
         this.holder.onclick = (event)=>{
             event.preventDefault();
-            this.holder.classList.contains("off")
-            ?this.holder.classList.remove("off")
-            :this.holder.classList.add("off");
+            this.holder.classList.contains("off") ?
+            this.holder.classList.remove("off") : this.holder.classList.add("off");
             this.action();
         }
     }
     get on(){
-        return !this.holder.classList.contains("off")
+        return !this.holder.classList.contains("off");
     }
     action(){
         // all switches will set a property of something
         // between to two values (flex/none) (true/false)
         // 1/0
         let [obj, property, values] = [this.obj, this.property, this.values];
-        obj[property] = obj[property] ==  values[0]?values[1]:values[0]
+        obj[property] = obj[property] ==  values[0] ? values[1] : values[0]
     }
     static swtiches = [];
 }

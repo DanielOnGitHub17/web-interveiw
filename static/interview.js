@@ -21,19 +21,24 @@ class Interview{
         this.layoutButton = new Switch(CONTROLS
             , CONTROLS, "layout", [1, 0]);
         switchScreen(this.container.id);
-        // events
-        this.event()
         // end general
         // video specific
-        this.questionBox = this.useVideo?CC:QUESTIONBOX;
+        this.questionBox = this.useVideo ? CC : QUESTIONBOX;
         SAY.remove();
         if (this.useVideo){
             // this.layoutButton.switch.click();  // switch layout
+            (this.transcriber = new (
+                window.webkitSpeechRecognition || window.SpeechRecognition
+            )())
+            .continuous = this.transcribe = true;
             return;
+        } else{
+            PLAYORPAUSE.remove();
         }
+        // events
+        this.event()
         // end video specific
 
-        PLAYORPAUSE.remove();
         /* this will be refactored to sth else: SAY.textcontent=REWRITE...
         there will be up to three pregenerated text for answer
         probably in this.suggestions = ...[[], []]
@@ -59,7 +64,7 @@ class Interview{
 
                 case "PLAYORPAUSE":
                     this[target.textContent.toLowerCase()]();
-                    target.textContent = target.textContent == "PAUSE"?"RESUME":"PAUSE";
+                    target.textContent = target.textContent == "PAUSE" ? "RESUME" : "PAUSE";
                     break;
             
                 default:
@@ -72,11 +77,11 @@ class Interview{
                 this.disenable();
                 // disable repeat, previous, next
             }
-            TALK.onerror=()=>console.log;
+            TALK.onerror=console.log;
 
             // VIDEO event (try onload too, "DOMCONTENTLOADED...")
             // the real 'start' for video usage
-            VIDEO.onloadstart=()=>{
+            VIDEO.onloadstart = ()=>{
                 hideLoading();
                 this.disenable();
                 VIDEO.play();
@@ -84,13 +89,23 @@ class Interview{
                 if (hours > 17){
                     time = "evening";
                 } else{
-                    time = hours > 11?"afternoon":"morning";
+                    time = hours > 11 ? "afternoon" : "morning";
                 }
-                say(`Good ${time}. ${FIRSTSAY.value}`).then(begin=>{
+                say(`Good ${time}. ${FIRSTSAY.value}`).then(()=>{
                     this.ask(0);
+                    this.transcriber.start();
                 })
             }
-
+            // transcriber CC.
+            this.transcriber.onresult = (event)=>{
+                if (!this.transcribe) return;
+                CC.textContent = event.results[event.resultIndex][0].transcript+' ';
+                this.answers[this.index] += CC.textContent;
+            }
+            this.transcriber.onend = ()=>{
+                if (this.transcribe) this.transcriber.start();
+            }
+            this.transcriber.onerror = console.log;
             return;
         }
         ANSWERBOX.oninput=()=>{
@@ -100,6 +115,7 @@ class Interview{
     disenable(bool=true){
         [...SAY.children].forEach(i=>i.disabled=bool);
         [PREV, NEXT].forEach(button=>button.disabled=bool);
+        this.transcribe = !bool;
     }
     ask(){
         if (this.useVideo){
@@ -108,7 +124,7 @@ class Interview{
             });
         } else{
             this.questionBox.textContent = this.question;
-            ANSWERBOX.value = this.answer?this.answer:"";
+            ANSWERBOX.value = this.answer ? this.answer : "";
             ANSWERBOX.focus();
         }
     }
@@ -126,6 +142,47 @@ class Interview{
                 navigator.mediaDevices.getUserMedia({
                     audio: true, video: true, facingMode: {exact: "user"}
                 }).then(mediaStream=>{
+                    navigator.mediaDevices.getDisplayMedia({
+                        audio: true, video: {displaySurface: 'monitor'}
+                    }).then(screenStream=>{
+                        // check if user followed instructions.
+                        let track = screenStream.getAudioTracks()[0];
+                        if (!track || track.label != "System Audio"){
+                            throw "Did not follow instructions";
+                        }
+                        this.video(mediaStream, screenStream);
+                    }).catch(error=>{
+                        console.log(error);
+                        this.exit("You <i><b>must </b></i> share <b>entire</b> screen and system audio.");
+                    })
+                }).catch((error)=>{
+                    console.log(error);
+                    this.exit("You should allow all permissions!");
+                })
+            })
+            return;
+        }
+        this.ask(0);
+    }
+    video(mediaStream, screenStream){
+        if (this.useVideo){
+            // say setting things up
+            showLoading("setting up...");
+            say("setting things up, the interview will start soon").then(resp=>{
+                if (!navigator.mediaDevices){
+                    return this.exit("Sorry, your browser cannot record video.");
+                }
+                //  remove audio: true from getUserMedia later, screen record will
+                // handle that
+                // options for recording...
+                navigator.mediaDevices.getUserMedia({
+                    audio: true, video: true, facingMode: {exact: "user"}
+                }).then(mediaStream=>{
+                    if (isPhone()){
+                        // ha! (back to old implementation of spe)
+                        this.video(mediaStream);
+                        return
+                    } 
                     navigator.mediaDevices.getDisplayMedia({
                         audio: true, video: true
                     }).then(screenStream=>{
@@ -158,30 +215,32 @@ class Interview{
         this.ask(0);
     }
     video(mediaStream, screenStream){
-        // for playing around, add the screen's stream
-        // get the video track
-        this.mdStm = mediaStream;
-        this.videoTrack = mediaStream.getVideoTracks()[0];
-        // stop screen's videoTrack
-        let screenVideo = screenStream.getVideoTracks()[0];
-        screenVideo.stop();
-        screenStream.removeTrack(screenVideo);
-        // merge the two streams into one audio stream
-        let audioCtx = new AudioContext()
-        , destination = audioCtx.createMediaStreamDestination();
-        [...arguments].forEach(stream=>{
-            audioCtx.createMediaStreamSource(stream).connect(destination);
-        })
-        this.dest = destination.stream;
-        // get the one audio track from the gotten stream
-        this.audioTrack= destination.stream.getAudioTracks()[0];
+        if (screenStream){
+            this.mdStm = mediaStream;
+            this.videoTrack = mediaStream.getVideoTracks()[0];
+            // stop screen's videoTrack
+            let screenVideo = screenStream.getVideoTracks()[0];
+            screenVideo.stop();
+            screenStream.removeTrack(screenVideo);
+            // merge the two streams into one audio stream
+            let audioCtx = new AudioContext()
+            , destination = audioCtx.createMediaStreamDestination();
+            [...arguments].forEach(stream=>{
+                audioCtx.createMediaStreamSource(stream).connect(destination);
+            })
+            this.dest = destination.stream;
+            // get the one audio track from the gotten stream
+            this.audioTrack= destination.stream.getAudioTracks()[0];
 
-        // create a new media stream to be used
-        this.mediaStream = new MediaStream();
-        // add video and audio tracks to this one stream
-        ["audio", "video"].forEach(track=>{
-            this.mediaStream.addTrack(this[track+"Track"]);
-        });
+            // create a new media stream to be used
+            this.mediaStream = new MediaStream();
+            // add video and audio tracks to this one stream
+            ["audio", "video"].forEach(track=>{
+                this.mediaStream.addTrack(this[track+"Track"]);
+            });
+        } else{
+            this.mediaStream = mediaStream;
+        }
         this.mediaRecorder = new MediaRecorder(
             this.mediaStream, {mimeType: "video/webm; codecs=vp9"}
         );
@@ -209,9 +268,8 @@ class Interview{
                         })
                         this.mediaRecorder.stop();
                     });
-                    return;
                 }
-                this.textResponse(this.questions, this.answers);
+                this.textResponse(this.useVideo);
             });
             return;
         }
@@ -255,15 +313,14 @@ class Interview{
     exit(message="Sorry, an error occured. You will have to restart."){
         alert(message, ["RESTART"]).then(()=>location.reload());
     }
-    textResponse(){
-        switchScreen("TXTRESP");
-        for (let index in questions){  // proper way to loop??? :)
+    textResponse(hide=False){
+        for (let i = 0; i < INTERVIEW.questions.length; i++){  // proper way to loop??? :)
             let row = add(make("tr"), TEXTRESPONSE);
-            index = +index;
             ["questions", "answers"].forEach(
-                arg=>add(make("td"), row).textContent=this[arg][index]
+                arg=>add(make("td"), row).textContent=this[arg][i]
             )
         }
+        if (!hide) switchScreen("TXTRESP");
     }
     videoResponse(event){
         showLoading("making video...");
@@ -272,7 +329,6 @@ class Interview{
         VIDEORESPONSE.src = URL.createObjectURL(this.videoFile);
         (SAVE.downloader = make('a')).download = "ai-interview.webm";
         SAVE.downloader.href = VIDEORESPONSE.src;
-        SAVE.onclick = ()=>{SAVE.downloader.click()};
         hideLoading();
     }
     static containers = [TEXTINTERVIEW, VIDEOINTERVIEW];
@@ -287,7 +343,7 @@ class Interview{
                 DONE = true
             }
             new Question(obj[questIndex++]);
-        })
+        }, 400);
     }
     // in SETUP, do a starter.
 }
@@ -296,7 +352,7 @@ class Interview{
 Object.defineProperty(CONTROLS, "layout", {
     get: function(){return CONTROLS.classList.contains("side")},
     set: function(value){
-        let property = value?"add":"remove";
+        let property = value ? "add" : "remove";
         CONTROLS.classList[property]("side");
         CONTROLS.parentElement.classList[property]("side");
     }
