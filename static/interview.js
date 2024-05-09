@@ -1,42 +1,46 @@
-
+// file is too long. Abstract much things as functions / other classes
+// create more JS files, use OOP composition and inheritance largely.
+// maybe even define Interview.prototype.manyOtherMethods in another file
 class Interview{
     constructor(questions, useVideo){
         window.x = this;
         [this.questions, this.useVideo] = [questions, useVideo];
         this.answers = [];
+        for (let i = 0; i < this.questions.length; i++){
+            this.answers.push("");
+        };
         this.index = 0;
         this.configure();
-    }
-    get question(){
-        return this.questions[this.index];
-    }
-    get answer(){
-        return this.answers[this.index];
+        this.event();
     }
     configure(){
         // general
         // choose the container video/text
-        this.container = Interview.containers[this.useVideo+0];
+        this.container = Interview.containers[+this.useVideo];
+        // add controls to it
         this.container.append(CONTROLS);
+        // create a switch to toggle the control's layout
         this.layoutButton = new Switch(CONTROLS
             , CONTROLS, "layout", [1, 0]);
+        // display the container only
         switchScreen(this.container.id);
+        SAY.remove();
         // end general
+
         // video specific
         this.questionBox = this.useVideo ? CC : QUESTIONBOX;
-        SAY.remove();
         if (this.useVideo){
             // this.layoutButton.switch.click();  // switch layout
+            // this.transcriber = {};
             (this.transcriber = new (
-                window.webkitSpeechRecognition || window.SpeechRecognition
+                window.SpeechRecognition || window.webkitSpeechRecognition
             )())
             .continuous = this.transcribe = true;
-            return;
+            // return;
         } else{
             PLAYORPAUSE.remove();
         }
         // events
-        this.event()
         // end video specific
 
         /* this will be refactored to sth else: SAY.textcontent=REWRITE...
@@ -72,19 +76,21 @@ class Interview{
             }
         }
         if (this.useVideo){
-            // TALK.voice = getVoice(speechSearch.value);
             TALK.onstart = TALK.onresume = VIDEO.onpause = ()=>{
                 this.disenable();
                 // disable repeat, previous, next
             }
-            TALK.onerror=console.log;
+            TALK.onerror = console.log;
+            // no TALK.onend, use say().then -> whatever you want to do THEN.
 
             // VIDEO event (try onload too, "DOMCONTENTLOADED...")
-            // the real 'start' for video usage
+            // the real '.start' for video usage
             VIDEO.onloadstart = ()=>{
                 hideLoading();
                 this.disenable();
                 VIDEO.play();
+                // resize CC box
+                CC.style.width = VIDEO.getBoundingClientRect().width+'px';
                 let hours = new Date().getHours(), time;
                 if (hours > 17){
                     time = "evening";
@@ -99,13 +105,15 @@ class Interview{
             // transcriber CC.
             this.transcriber.onresult = (event)=>{
                 if (!this.transcribe) return;
-                CC.textContent = event.results[event.resultIndex][0].transcript+' ';
-                this.answers[this.index] += CC.textContent;
+                let text = event.results[event.resultIndex][0].transcript+' ';
+                CC.textContent = text;
+                this.answers[this.index] += text;
+                // scroll to see how big text has become
+                CC.scrollTop = CC.scrollHeight;
             }
             this.transcriber.onend = ()=>{
                 if (this.transcribe) this.transcriber.start();
             }
-            this.transcriber.onerror = console.log;
             return;
         }
         ANSWERBOX.oninput=()=>{
@@ -124,7 +132,7 @@ class Interview{
             });
         } else{
             this.questionBox.textContent = this.question;
-            ANSWERBOX.value = this.answer ? this.answer : "";
+            ANSWERBOX.value = this.answer || "";
             ANSWERBOX.focus();
         }
     }
@@ -142,49 +150,13 @@ class Interview{
                 navigator.mediaDevices.getUserMedia({
                     audio: true, video: true, facingMode: {exact: "user"}
                 }).then(mediaStream=>{
+                    // if (isPhone()){
+                    //     // ha! (back to old implementation of spe)
+                    //     this.video(mediaStream);
+                    //     return
+                    // } 
                     navigator.mediaDevices.getDisplayMedia({
-                        audio: true, video: {displaySurface: 'monitor'}
-                    }).then(screenStream=>{
-                        // check if user followed instructions.
-                        let track = screenStream.getAudioTracks()[0];
-                        if (!track || track.label != "System Audio"){
-                            throw "Did not follow instructions";
-                        }
-                        this.video(mediaStream, screenStream);
-                    }).catch(error=>{
-                        console.log(error);
-                        this.exit("You <i><b>must </b></i> share <b>entire</b> screen and system audio.");
-                    })
-                }).catch((error)=>{
-                    console.log(error);
-                    this.exit("You should allow all permissions!");
-                })
-            })
-            return;
-        }
-        this.ask(0);
-    }
-    video(mediaStream, screenStream){
-        if (this.useVideo){
-            // say setting things up
-            showLoading("setting up...");
-            say("setting things up, the interview will start soon").then(resp=>{
-                if (!navigator.mediaDevices){
-                    return this.exit("Sorry, your browser cannot record video.");
-                }
-                //  remove audio: true from getUserMedia later, screen record will
-                // handle that
-                // options for recording...
-                navigator.mediaDevices.getUserMedia({
-                    audio: true, video: true, facingMode: {exact: "user"}
-                }).then(mediaStream=>{
-                    if (isPhone()){
-                        // ha! (back to old implementation of spe)
-                        this.video(mediaStream);
-                        return
-                    } 
-                    navigator.mediaDevices.getDisplayMedia({
-                        audio: true, video: true
+                        audio: true, video: {displaySurface: "monitor"}
                     }).then(screenStream=>{
                         // check if user followed instructions.
                         let track = screenStream.getAudioTracks()[0];
@@ -263,6 +235,7 @@ class Interview{
                 REFRESHER.disabled = false;
                 if (this.useVideo){
                     say(FINALSAY.value).then(resp=>{
+                        this.transcribe = false;
                         ["screen", "media"].forEach(type=>{
                             this[type+"Stream"].getTracks().forEach(i=>i.stop());
                         })
@@ -306,13 +279,6 @@ class Interview{
             this.disenable(false);
         }
     }
-    blur(){
-        this.questionBox.setAttribute("disabled", "true");
-        setTimeout(()=>this.questionBox.removeAttribute("disabled"), 200)
-    }
-    exit(message="Sorry, an error occured. You will have to restart."){
-        alert(message, ["RESTART"]).then(()=>location.reload());
-    }
     textResponse(hide=False){
         for (let i = 0; i < INTERVIEW.questions.length; i++){  // proper way to loop??? :)
             let row = add(make("tr"), TEXTRESPONSE);
@@ -323,13 +289,24 @@ class Interview{
         if (!hide) switchScreen("TXTRESP");
     }
     videoResponse(event){
-        showLoading("making video...");
         switchScreen("VIDRESP");
         this.videoFile = event.data;
         VIDEORESPONSE.src = URL.createObjectURL(this.videoFile);
         (SAVE.downloader = make('a')).download = "ai-interview.webm";
         SAVE.downloader.href = VIDEORESPONSE.src;
-        hideLoading();
+    }
+    blur(){
+        this.questionBox.setAttribute("disabled", "true");
+        setTimeout(()=>this.questionBox.removeAttribute("disabled"), 200)
+    }
+    exit(message="Sorry, an error occured. You will have to restart."){
+        alert(message, ["RESTART"]).then(()=>location.reload());
+    }
+    get question(){
+        return this.questions[this.index];
+    }
+    get answer(){
+        return this.answers[this.index];
     }
     static containers = [TEXTINTERVIEW, VIDEOINTERVIEW];
     static aiGeneratedQuestions = [];

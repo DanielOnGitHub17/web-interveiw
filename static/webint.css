@@ -485,6 +485,9 @@ video{
     border-width: 3px;
     padding: 0 0 5px 0;
     letter-spacing: 1px;
+    height: 1.5em;
+    overflow-y: scroll;
+    scrollbar-width: none;
 }
 
 /* end VIDEOINTERVIEW SCREEN */
