@@ -1,30 +1,45 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.views import View
 
 # Create your views here.
-from .helpers import interview_model, questions_from_text, questions_from_topic, rewrite_all
 import json
+from random import random
+from .helpers import handle_error, questions_from_text, questions_from_topic, rewrite_all
 
-def questions_from(request):
-    result = "Failed"
-    details = json.loads(request.body)
-    number = number = details["number"] if "number" in details else 10
-    print(details)
-    try:
-        if "topic" in details:
-            result = questions_from_topic(details["topic"], number)
-        elif "text" in details:
-            result = questions_from_text(details["text"], number)
-        else:
-            result = "Passed"
-    except Exception as error:
-        print(error)
-        with open("../../../errors.txt", 'a') as file:
-            file.write(f"{str(error)}\n")
-    print(result)
-    return HttpResponse(json.dumps(result))
+# Both views assumes that Gemini returns perfect json/false 
+class QuestionsFrom(View):
+    def post(self, request):
+        result = "Failed"
+        try:
+            details = json.loads(request.body)
+            number = details["number"]
+            return HttpResponse(
+                json.dumps(
+                    {"questions": [random() for i in range(number)]}
+                    )
+                )  # testing
+            if "topic" in details:
+                result = questions_from_topic(details["topic"], number)
+            elif "text" in details:
+                result = questions_from_text(details["text"], number)
+            else:
+                result = "Passed"
+        except Exception as error:
+            handle_error(error)
+        return HttpResponse(result)
 
-def questions_rewrite(request):
-    result = ""
-    details = request.POST
-    return HttpResponse("Not implemented")
+class QuestionsRewrite(View):
+    def post(self, request):
+        result = "Failed"
+        try:
+            questions = json.loads(request.body)
+            return HttpResponse(
+                json.dumps(
+                    [[random() for i in range(5)] for x in questions]
+                    )
+                )
+            result = rewrite_all(questions, 5)
+        except Exception as error:
+            handle_error(error)
+        return HttpResponse(result)
