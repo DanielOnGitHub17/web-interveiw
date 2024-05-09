@@ -23,7 +23,6 @@ function consentToRecording(){
     })
 }
 
-
 // get questions. Monitor disableness of button
 function setupAIQuestions() {
     let rep = AIGEN.reportValidity.bind(AIGEN);
@@ -43,29 +42,12 @@ function setupAIQuestions() {
             body["number"] = parseInt(data.get("questno"));
             // flag
             DONE = false
-            fetch("/ai/questions/", {
-                method: "post",
-                headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getS(`[name=csrfmiddlewaretoken]`).value
-                },
-            
-            //make sure to serialize your JSON body
-                body: JSON.stringify(body)
-            }).then(response=>{
-                console.log(response)
-                if (response.status != 200){
-                    throw "rejected with error "+response.statusText
-                }
-                response.json().then(obj=>{
-                    console.log(obj);
-                    if (!obj || ["Passed", "Failed"].includes(obj.trim())){
-                        throw "rejected "+obj;
-                        // return;
-                    }
+            getFromServer("/ai/questions/", body)
+            .then(response=>{
+                checkResponse(response, ["Passed", "Failed"])
+                .then(()=>{
                     alert("Questions will now be added");
-                    Interview.generateQuestions(JSON.parse(obj)["questions"]);
+                    Interview.generateQuestions(response.obj["questions"]);
                 }).catch(error=>{
                     console.log(error);
                     alert("Failed to generate questions!");
@@ -76,6 +58,37 @@ function setupAIQuestions() {
             });
         }
     }
+}
+
+function getFromServer(url, body){
+    return fetch(url, {
+        method: "post",
+        headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getS(`[name=csrfmiddlewaretoken]`).value
+        },
+    
+        body: JSON.stringify(body)
+    });
+}
+function checkResponse(response, wrongs, error="API cannot be used"){
+    if (response.status != 200){
+        throw "rejected with error "+response.statusText;
+    }
+    // will return the promise from text()
+    return response.text().then(obj=>{
+        // Check for other responses...
+        if (!obj || wrongs.includes(obj.trim())){
+            throw "rejected "+obj;
+        }
+        // Now convert to json.
+        obj = jsonObj(obj);
+        // Gemini cannot be used ("inside" joke (inside joke))
+        if (!obj) throw error;
+        // Keep obj across all (let's see how promises work)
+        response.obj = obj;
+    });
 }
 
 // initialize the loading element, that blocks the screen and all
