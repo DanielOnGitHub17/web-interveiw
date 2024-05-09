@@ -57,10 +57,19 @@ def questions_from_text(text, number):
 
 
 def rewrite_all(questions, number):
-    return can_use() and interview_model.generate_content(
-        f"Rewrite each question in {questions} in {number} different ways, keeping the meaning of each. "
-        "none of your answers can be the same as the question I provide. "
-        "return your answer in a json format. "
-        ". whereby your return value is a list of lists containing strings, "
-        f"and your return value's length is the same as that in {questions}"
-    ).text
+    if can_use():
+        various = interview_model.generate_content(
+            f"Rewrite each question in {questions} in {number} different ways, keeping the meaning of each. "
+            "none of your answers can be the same as the question I provide. "
+            "return your answer in a json format. "
+            ". whereby your return value is a list of lists containing strings, "
+            f"and your return value's length is the same as that in {questions}"
+        ).text
+        return various[various.find('[') : various.find(']')+1]
+    return can_use()
+
+def handle_error(error):
+    print(error)
+    with open("../../../errors.txt", 'a') as file:
+        file.write(f"{str(error)}\n")
+    return error
