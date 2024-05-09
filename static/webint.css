@@ -485,12 +485,16 @@ video{
     border-width: 3px;
     padding: 0 0 5px 0;
     letter-spacing: 1px;
+    text-align: center;
     height: 1.5em;
     overflow-y: scroll;
     scrollbar-width: none;
 }
 
 /* end VIDEOINTERVIEW SCREEN */
+[id*="INTERVIEW"]{
+    align-items: center;
+}
 [id*="INTERVIEW"].side{
     display: grid;
     grid-template-areas:
@@ -587,7 +591,7 @@ or reroute by bitly
 
 */
 
-@media screen and (max-width: 25em){
+@media screen and (max-width: 768px){
     .modal{    
         left: calc(50% - 40vw);
     }
