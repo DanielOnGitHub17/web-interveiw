@@ -128,8 +128,8 @@ function saveData(){
     });
     local("AI_INTERVIEW", jsonStr(INTERVIEW));
 }
-onerror=(event)=>{
-    localStorage.error = String(event);
+onerror = (event)=>{
+    local("error", String(event));
 }
 function restoreSavedData(){
     // check if interview is a shared page
