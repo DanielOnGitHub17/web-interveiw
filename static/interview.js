@@ -1,19 +1,22 @@
 // file is too long. Abstract much things as functions / other classes
 // create more JS files, use OOP composition and inheritance largely.
-// maybe even define Interview.prototype.manyOtherMethods in another file
-class Interview{
-    constructor(questions, useVideo){
+// maybe even define Interview.prototype.manyOtherMethods in another file.
+// incorporate TensorFlow/Any free AI tool to check if input to AI is reasonable.
+// add 'goto' feature (maybe), goto question i...
+class Interview {
+    constructor(questions, useVideo) {
         window.x = this;
         [this.questions, this.useVideo] = [questions, useVideo];
         this.answers = [];
-        for (let i = 0; i < this.questions.length; i++){
+        for (let i = 0; i < this.questions.length; i++) {
             this.answers.push("");
         };
         this.index = 0;
+        this.rewriteAll();
         this.configure();
         this.event();
     }
-    configure(){
+    configure() {
         // general
         // choose the container video/text
         this.container = Interview.containers[+this.useVideo];
@@ -24,21 +27,22 @@ class Interview{
             , CONTROLS, "layout", [1, 0]);
         // display the container only
         switchScreen(this.container.id);
-        SAY.remove();
         // end general
 
         // video specific
         this.questionBox = this.useVideo ? CC : QUESTIONBOX;
-        if (this.useVideo){
+        if (this.useVideo) {
             // this.layoutButton.switch.click();  // switch layout
             // this.transcriber = {};
             (this.transcriber = new (
                 window.SpeechRecognition || window.webkitSpeechRecognition
             )())
-            .continuous = this.transcribe = true;
+                .continuous = this.transcribe = true;
             // return;
-        } else{
+        } else {
             PLAYORPAUSE.remove();
+            SAY.replaceWith(SAY.children[0]);
+            (SAY = CONTROLS.children[0]).textContent = "ASK DIFFERENTLY";
         }
         // events
         // end video specific
@@ -50,10 +54,10 @@ class Interview{
         choice(this.suggestions[this.index])
         for both text and video interview
          */
-        
+
     }
-    event(){
-        CONTROLS.onclick=(event)=>{
+    event() {
+        CONTROLS.onclick = (event) => {
             event.stopImmediatePropagation();
             event.stopPropagation();
             let target = event.target;
@@ -70,13 +74,25 @@ class Interview{
                     this[target.textContent.toLowerCase()]();
                     target.textContent = target.textContent == "PAUSE" ? "RESUME" : "PAUSE";
                     break;
-            
+
                 default:
                     break;
             }
         }
-        if (this.useVideo){
-            TALK.onstart = TALK.onresume = VIDEO.onpause = ()=>{
+        SAY.onclick = (event) => {
+            event.stopImmediatePropagation();
+            event.stopPropagation();  // necessary?
+            let target = event.target;
+            if (!["BUTTON", "SELECT"].includes(target.nodeName)) return;
+            this.ask(
+                this.index
+                , (target.value || target.textContent)
+                    .toUpperCase() == "REPEAT" ?
+                    this.holdQuestion : this.anotherQuestion
+            );
+        }
+        if (this.useVideo) {
+            TALK.onstart = TALK.onresume = VIDEO.onpause = () => {
                 this.disenable();
                 // disable repeat, previous, next
             }
@@ -85,90 +101,91 @@ class Interview{
 
             // VIDEO event (try onload too, "DOMCONTENTLOADED...")
             // the real '.start' for video usage
-            VIDEO.onloadstart = ()=>{
+            VIDEO.onloadstart = () => {
                 hideLoading();
                 this.disenable();
                 VIDEO.play();
                 // resize CC box
-                CC.style.width = VIDEO.getBoundingClientRect().width+'px';
                 let hours = new Date().getHours(), time;
-                if (hours > 17){
+                if (hours > 17) {
                     time = "evening";
-                } else{
+                } else {
                     time = hours > 11 ? "afternoon" : "morning";
                 }
-                say(`Good ${time}. ${FIRSTSAY.value}`).then(()=>{
+                say(`Good ${time}. ${FIRSTSAY.value}`).then(() => {
                     this.ask(0);
                     this.transcriber.start();
                 })
             }
             // transcriber CC.
-            this.transcriber.onresult = (event)=>{
+            this.transcriber.onresult = (event) => {
                 if (!this.transcribe) return;
-                let text = event.results[event.resultIndex][0].transcript+' ';
+                let text = event.results[event.resultIndex][0].transcript + ' ';
                 CC.textContent = text;
                 this.answers[this.index] += text;
                 // scroll to see how big text has become
                 CC.scrollTop = CC.scrollHeight;
             }
-            this.transcriber.onend = ()=>{
+            this.transcriber.onend = () => {
                 if (this.transcribe) this.transcriber.start();
             }
             return;
         }
-        ANSWERBOX.oninput=()=>{
+        ANSWERBOX.oninput = () => {
             this.answers[this.index] = ANSWERBOX.value;
-        }        
+        }
     }
-    disenable(bool=true){
-        [...SAY.children].forEach(i=>i.disabled=bool);
-        [PREV, NEXT].forEach(button=>button.disabled=bool);
+    disenable(bool = true) {
+        [...SAY.children].forEach(i => i.disabled = bool);
+        [PREV, NEXT].forEach(button => button.disabled = bool);
         this.transcribe = !bool;
     }
-    ask(){
-        if (this.useVideo){
-            say(this.question).then(resp=>{
+    ask(index, question) {
+        this.index = index || this.index;  // how to 'goto'
+        question = question || this.question;
+        if (this.useVideo) {
+            say(question).then(resp => {
                 this.disenable(false);
             });
-        } else{
-            this.questionBox.textContent = this.question;
+        } else {
+            this.questionBox.textContent = question;
             ANSWERBOX.value = this.answer || "";
             ANSWERBOX.focus();
         }
     }
-    start(){
-        if (this.useVideo){
+    start() {
+        if (this.useVideo) {
             // say setting things up
             showLoading("setting up...");
-            say("setting things up, the interview will start soon").then(resp=>{
-                if (!navigator.mediaDevices){
+            say("setting things up, the interview will start soon").then(resp => {
+                if (!navigator.mediaDevices) {
                     return this.exit("Sorry, your browser cannot record video.");
                 }
                 //  remove audio: true from getUserMedia later, screen record will
                 // handle that
                 // options for recording...
                 navigator.mediaDevices.getUserMedia({
-                    audio: true, video: true, facingMode: {exact: "user"}
-                }).then(mediaStream=>{
+                    audio: true, video: true, facingMode: { exact: "user" }
+                }).then(mediaStream => {
                     // if (isPhone()){
                     //     // ha! (back to old implementation of spe)
                     //     this.video(mediaStream);
                     //     return
                     // } 
                     navigator.mediaDevices.getDisplayMedia({
-                        audio: true, video: {displaySurface: "monitor"}
-                    }).then(screenStream=>{
+                        audio: true, video: { displaySurface: "monitor" }
+                    }).then(screenStream => {
                         // check if user followed instructions.
                         let track = screenStream.getAudioTracks()[0];
-                        if (!track || track.label != "System Audio"){
+                        if (!track || track.label != "System Audio") {
                             throw "Did not follow instructions";
                         }
                         this.video(mediaStream, screenStream);
-                    }).catch(error=>{
+                    }).catch(error => {
                         console.log(error);
                         this.exit("You <i><b>must </b></i> share <b>entire</b> screen and system audio.");
                     })
-                }).catch((error)=>{
+                }).catch((error) => {
                     console.log(error);
                     this.exit("You should allow all permissions!");
                 })
@@ -186,8 +203,8 @@ class Interview{
         }
         this.ask(0);
     }
-    video(mediaStream, screenStream){
-        if (screenStream){
+    video(mediaStream, screenStream) {
+        if (screenStream) {
             this.mdStm = mediaStream;
             this.videoTrack = mediaStream.getVideoTracks()[0];
             // stop screen's videoTrack
@@ -196,48 +213,48 @@ class Interview{
             screenStream.removeTrack(screenVideo);
             // merge the two streams into one audio stream
             let audioCtx = new AudioContext()
-            , destination = audioCtx.createMediaStreamDestination();
-            [...arguments].forEach(stream=>{
+                , destination = audioCtx.createMediaStreamDestination();
+            [...arguments].forEach(stream => {
                 audioCtx.createMediaStreamSource(stream).connect(destination);
             })
             this.dest = destination.stream;
             // get the one audio track from the gotten stream
-            this.audioTrack= destination.stream.getAudioTracks()[0];
+            this.audioTrack = destination.stream.getAudioTracks()[0];
 
             // create a new media stream to be used
             this.mediaStream = new MediaStream();
             // add video and audio tracks to this one stream
-            ["audio", "video"].forEach(track=>{
-                this.mediaStream.addTrack(this[track+"Track"]);
+            ["audio", "video"].forEach(track => {
+                this.mediaStream.addTrack(this[track + "Track"]);
             });
-        } else{
+        } else {
             this.mediaStream = mediaStream;
         }
         this.mediaRecorder = new MediaRecorder(
-            this.mediaStream, {mimeType: "video/webm; codecs=vp9"}
+            this.mediaStream, { mimeType: "video/webm; codecs=vp9" }
         );
         this.screenStream = screenStream;
-        this.mediaRecorder.ondataavailable=(event)=>{
+        this.mediaRecorder.ondataavailable = (event) => {
             this.videoResponse(event);
         }
         this.mediaRecorder.start();
         VIDEO.srcObject = this.mediaStream;
-        VIDEO.muted =  true;
+        VIDEO.muted = true;
     }
-    next(){
-        let ended =this.index >= this.questions.length - 1
-        if (!this.useVideo && ANSWERBOX.value.trim() == ""){
+    next() {
+        let ended = this.index >= this.questions.length - 1
+        if (!this.useVideo && ANSWERBOX.value.trim() == "") {
             return alert("Enter a response to proceed!");
         }
-        if (ended){
-            confirm("Do you want to complete your interview?").then(bool=>{
+        if (ended) {
+            confirm("Do you want to complete your interview?").then(bool => {
                 if (!bool) return;
                 REFRESHER.disabled = false;
-                if (this.useVideo){
-                    say(FINALSAY.value).then(resp=>{
+                if (this.useVideo) {
+                    say(FINALSAY.value).then(resp => {
                         this.transcribe = false;
-                        ["screen", "media"].forEach(type=>{
-                            this[type+"Stream"].getTracks().forEach(i=>i.stop());
+                        ["screen", "media"].forEach(type => {
+                            this[type + "Stream"].getTracks().forEach(i => i.stop());
                         })
                         this.mediaRecorder.stop();
                     });
@@ -246,78 +263,91 @@ class Interview{
             });
             return;
         }
-        if (this.useVideo){
+        if (this.useVideo) {
             // maybe check if speechrecog text is plenty enough
-        } else{
+        } else {
             this.blur();
         }
         this.ask(++this.index);
     }
-    previous(){
-        if (this.index <= 0){
+    previous() {
+        if (this.index <= 0) {
             return alert("Err... this is the first question...");
         }
-        if (this.useVideo){
+        if (this.useVideo) {
             // maybe check if speechrecog text is plenty enough
-        } else{
-                this.blur();
+        } else {
+            this.blur();
         }
         this.ask(--this.index);
     }
-    pause(){
+    pause() {
         speechSynthesis.pause();
         VIDEO.pause();
         this.mediaRecorder.pause();
         // pause audio recorder (screen recording)
     }
-    resume(){
+    resume() {
         // resume audio recorder (screen recording)
         this.mediaRecorder.resume();
         VIDEO.play();
         speechSynthesis.resume();
-        if (!speechSynthesis.speaking && !speechSynthesis.paused){
+        if (!speechSynthesis.speaking && !speechSynthesis.paused) {
             this.disenable(false);
         }
     }
-    textResponse(hide=False){
-        for (let i = 0; i < INTERVIEW.questions.length; i++){  // proper way to loop??? :)
+    get anotherQuestion() {
+        return (this.holdQuestion = this.various ? choice(this.various[this.index]) : this.holdQuestion);
+    }
+    rewriteAll() {
+        getFromServer(`/ai/rewrite/`, this.questions)
+        .then(response=>{
+            checkResponse(response, ["Failed"])
+            .then(()=>{
+                this.various = response.obj;
+            }).catch(console.log)
+        }).catch(console.log)
+    }
+    textResponse(hide = False) {
+        for (let i = 0; i < INTERVIEW.questions.length; i++) {  // proper way to loop??? :)
             let row = add(make("tr"), TEXTRESPONSE);
             ["questions", "answers"].forEach(
-                arg=>add(make("td"), row).textContent=this[arg][i]
+                arg => add(make("td"), row).textContent = this[arg][i]
             )
         }
         if (!hide) switchScreen("TXTRESP");
     }
-    videoResponse(event){
+    videoResponse(event) {
         switchScreen("VIDRESP");
         this.videoFile = event.data;
         VIDEORESPONSE.src = URL.createObjectURL(this.videoFile);
         (SAVE.downloader = make('a')).download = "ai-interview.webm";
         SAVE.downloader.href = VIDEORESPONSE.src;
     }
-    blur(){
+    blur() {
         this.questionBox.setAttribute("disabled", "true");
-        setTimeout(()=>this.questionBox.removeAttribute("disabled"), 200)
+        setTimeout(() => this.questionBox.removeAttribute("disabled"), 200)
     }
-    exit(message="Sorry, an error occured. You will have to restart."){
-        alert(message, ["RESTART"]).then(()=>location.reload());
+    exit(message = "Sorry, an error occured. You will have to restart.") {
+        alert(message, ["RESTART"]).then(() => location.reload());
     }
-    get question(){
-        return this.questions[this.index];
+    get question() {
+        return (this.holdQuestion = this.questions[this.index]);
     }
-    get answer(){
+    get answer() {
         return this.answers[this.index];
     }
     static containers = [TEXTINTERVIEW, VIDEOINTERVIEW];
     static aiGeneratedQuestions = [];
-    static generateQuestions(obj){
+    static generateQuestions(obj) {
         Interview.aiGeneratedQuestions = Interview.aiGeneratedQuestions.concat(obj);
         // make it animated
         let questIndex = 0;
-        let animateQUestions = setInterval(()=>{
-            if (!obj[questIndex]){
+        let animateQUestions = setInterval(() => {
+            if (!obj[questIndex]) {
                 clearInterval(animateQUestions);
-                DONE = true
+                return DONE = true;
+                
             }
             new Question(obj[questIndex++]);
         }, 400);
@@ -327,13 +357,13 @@ class Interview{
 
 // set some things for CONTROLS
 Object.defineProperty(CONTROLS, "layout", {
-    get: function(){return CONTROLS.classList.contains("side")},
-    set: function(value){
+    get: function () { return CONTROLS.classList.contains("side") },
+    set: function (value) {
         let property = value ? "add" : "remove";
         CONTROLS.classList[property]("side");
         CONTROLS.parentElement.classList[property]("side");
     }
 })
-function layout(){
+function layout() {
     CONTROLS
 }
