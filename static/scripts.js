@@ -132,17 +132,14 @@ function createVoiceSearchUI(){
 // for "data persistence"...
 function saveData(){
     if (window.SHARED) return;
-    INTERVIEW.questions = [...QUESTIONLIST.children].map(q=>q.obj.question);
+    INTERVIEW.QUESTIONS = [...QUESTIONLIST.children].map(q=>q.obj.question);
     // FIRST|FINAL-->SAY
-    ["FIRSTSAY", "FINALSAY"].forEach(phrase=>{
+    TEXT_FIELDS.forEach(phrase=>{
         if (window[phrase]){
-            INTERVIEW[phrase] = window[phrase].value;
+            INTERVIEW[phrase] = window[phrase].value.trim();
         }
     });
     local("AI_INTERVIEW", jsonStr(INTERVIEW));
-}
-onerror = (event)=>{
-    local("error", String(event));
 }
 function restoreSavedData(){
     // check if interview is a shared page
@@ -151,9 +148,9 @@ function restoreSavedData(){
     }else{
         INTERVIEW = local("AI_INTERVIEW") ? jsonObj(local("AI_INTERVIEW")) : {};
     }
-    const QUESTIONS = INTERVIEW.questions ? INTERVIEW.questions : [];
+    const QUESTIONS = INTERVIEW.QUESTIONS ? INTERVIEW.QUESTIONS : [];
     QUESTIONS.forEach(q=>(new Question(q)));
-    ["FIRSTSAY", "FINALSAY"].forEach(pos=>{
+    TEXT_FIELDS.forEach(pos=>{
         if (INTERVIEW[pos]){
             window[pos].value = INTERVIEW[pos];
         }
@@ -177,3 +174,6 @@ function say(text="", voice){
 function getVoice(name){
     return speechSynthesis.getVoices().find(i=>i.name == name);
 }
+
+const TEXT_FIELDS = ["TEXT_BEFORE", "TEXT_AFTER"]
+, DONE = true;

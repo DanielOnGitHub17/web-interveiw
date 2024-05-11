@@ -25,6 +25,13 @@
                 <button id="PREV">PREVIOUS</button>
                 <button id="NEXT">NEXT</button>
             </div>
+            <form action="/share/" id="SHARE" method="post">
+                {% csrf_token %}
+                <div hidden="hidden">
+                    {{ share_form.as_ul }}
+                </div>
+                <button type="submit" id="SAVER">Share</button>
+            </form>
         </div>
         <p id="ERRORS"></p>
         <button id="REFRESHER" disabled onclick="location=location">RESTART</button>
@@ -65,12 +72,12 @@
             <div id="VIDEOSETTINGS">
                 <ul>
                     <li>
-                        <label for="FIRSTSAY">Say when interview start:</label>
-                        <input type="text" id="FIRSTSAY">
+                        <label for="TEXT_BEFORE">Say when interview start:</label>
+                        <input type="text" id="TEXT_BEFORE">
                     </li>
                     <li>
-                        <label for="FINALSAY">Say after interview ends:</label>
-                        <input type="text" id="FINALSAY">
+                        <label for="TEXT_AFTER">Say after interview ends:</label>
+                        <input type="text" id="TEXT_AFTER">
                     </li>
                 </ul>
                 <div id="VOICETHINGS">

@@ -112,7 +112,7 @@ class Interview {
                 } else {
                     time = hours > 11 ? "afternoon" : "morning";
                 }
-                say(`Good ${time}. ${FIRSTSAY.value}`).then(() => {
+                say(`Good ${time}. ${INTERVIEW.TEXT_BEFORE}`).then(() => {
                     this.ask(0);
                     this.transcriber.start();
                 })
@@ -251,15 +251,16 @@ class Interview {
                 if (!bool) return;
                 REFRESHER.disabled = false;
                 if (this.useVideo) {
-                    say(FINALSAY.value).then(resp => {
+                    say(INTERVIEW.TEXT_AFTER).then(resp => {
                         this.transcribe = false;
                         ["screen", "media"].forEach(type => {
                             this[type + "Stream"].getTracks().forEach(i => i.stop());
                         })
-                        this.mediaRecorder.stop();
+                        this.mediaRecorder.stop();  // Will call videoResponse
                     });
                 }
                 this.textResponse(this.useVideo);
+                this.makeShare();
             });
             return;
         }
@@ -296,8 +297,15 @@ class Interview {
             this.disenable(false);
         }
     }
-    get anotherQuestion() {
-        return (this.holdQuestion = this.various ? choice(this.various[this.index]) : this.holdQuestion);
+    makeShare(){
+        if (window.SHARED) return;
+        // generalize forming later
+        let forming = (name, value)=>getS(`#SHARE [name="${name}"]`).value = value;
+        forming("questions", jsonStr(INTERVIEW.QUESTIONS));
+        TEXT_FIELDS.forEach(field=>{
+            forming(field.toLowerCase(), INTERVIEW[field]);
+        });
+        add(SHARE);
     }
     rewriteAll() {
         getFromServer(`/ai/rewrite/`, this.questions)
@@ -309,7 +317,7 @@ class Interview {
         }).catch(console.log)
     }
     textResponse(hide = False) {
-        for (let i = 0; i < INTERVIEW.questions.length; i++) {  // proper way to loop??? :)
+        for (let i = 0; i < INTERVIEW.QUESTIONS.length; i++) {  // proper way to loop??? :)
             let row = add(make("tr"), TEXTRESPONSE);
             ["questions", "answers"].forEach(
                 arg => add(make("td"), row).textContent = this[arg][i]
@@ -333,6 +341,9 @@ class Interview {
     }
     get question() {
         return (this.holdQuestion = this.questions[this.index]);
+    }
+    get anotherQuestion() {
+        return (this.holdQuestion = this.various ? choice(this.various[this.index]) : this.holdQuestion);
     }
     get answer() {
         return this.answers[this.index];

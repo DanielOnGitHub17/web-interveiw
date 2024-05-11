@@ -18,43 +18,27 @@ onload=()=>{
     // a = alert("Hi!").then(console.log);
     // videoSwitch.switch.click()
 }
-// add event listeners
-addEventListener("keyup", (event)=>{
-    if (event.key == 'b' && event.ctrlKey){
-        Question.restoreLast();
-    }
-})
-// add question button
-ADDQUESTION.onclick=()=>(new Question).text.focus();
-
-// restore question button
-RESTOREQUESTION.onclick=()=>Question.restoreLast();
-
-// TESTing voices
-TESTVOICE.onclick =()=>{
-    speechSynthesis.cancel();
-    if (!speechSearch.value) return;
-    say(`Hi, this is speech synthesis, using ${TALK.voice.name}`)
-}
-
-onbeforeunload=()=>{
-    speechSynthesis.cancel();
-    saveData();
-}
-
 STARTBUTTON.onclick=()=>{
+    // make a scripts function called start
     saveData();
-    if (!INTERVIEW.questions.length){
+    // too many if/else ifs (:
+    if (!INTERVIEW.QUESTIONS.length){
         return alert("You have to add at least one question");
-    } else if (videoSwitch.on && !speechSearch.value) {
-        return alert("Please, choose a voice!");
+    } else if (videoSwitch.on) {
+        if (!speechSearch.value){
+            return alert("Please, choose a voice!");
+        } else if (!(INTERVIEW.TEXT_AFTER && INTERVIEW.TEXT_BEFORE)){
+            return alert("Please specify what to say before <i>and </i> after interview");
+        }
+    } else if (!DONE){
+        return alert("Please wait, questions are being generated");
     }
     confirm("Are you sure you want to begin?", ["No", "Yes"])
     .then(resp=>{
         if (resp){
             (
                 interview = new Interview(
-                    INTERVIEW.questions
+                    INTERVIEW.QUESTIONS
                     , videoSwitch.on
         )).start();
         } else{
@@ -76,3 +60,31 @@ SAVE.onclick = ()=>{
         }
     })
 };
+
+// add question button
+ADDQUESTION.onclick=()=>(new Question).text.focus();
+
+// restore question button
+RESTOREQUESTION.onclick=()=>Question.restoreLast();
+
+// add event listeners
+addEventListener("keyup", (event)=>{
+    if (event.key == 'b' && event.ctrlKey){
+        Question.restoreLast();
+    }
+})
+// TESTing voices
+TESTVOICE.onclick =()=>{
+    speechSynthesis.cancel();
+    if (!speechSearch.value) return;
+    say(`Hi, this is speech synthesis, using ${TALK.voice.name}`)
+}
+
+onbeforeunload=()=>{
+    speechSynthesis.cancel();
+    saveData();
+}
+
+onerror = (event)=>{
+    local("error", String(event));
+}
