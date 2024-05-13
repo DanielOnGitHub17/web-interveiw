@@ -5,7 +5,8 @@ from django.views import View
 # Create your views here.
 import json
 from random import random
-from .helpers import handle_error, questions_from_text, questions_from_topic, rewrite_all
+from .helpers import questions_from_text, questions_from_topic, rewrite_all
+from helpers import handle_error
 
 # Both views assumes that Gemini returns perfect json/false 
 class QuestionsFrom(View):
