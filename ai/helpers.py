@@ -67,9 +67,3 @@ def rewrite_all(questions, number):
         ).text
         return various[various.find('[') : various.find(']')+1]
     return can_use()
-
-def handle_error(error):
-    print(error)
-    with open("../../../errors.txt", 'a') as file:
-        file.write(f"{str(error)}\n")
-    return error
