@@ -4,14 +4,17 @@ from django.views import View
 import json
 
 from .models import Interview
+Interview = Interview.objects
 from .forms import InterviewForm
 from helpers import handle_error, message_home
+
+MAX_STORED_INTERVIEWS = 25
 
 # Create your views here.
 class Saved(View):
     def get(self, request, at):
         try:
-            interview = Interview.objects.get(pk=at)
+            interview = Interview.get(pk=at)
             request.SHARED = {
                 "QUESTIONS": json.loads(interview.questions),
                 "TEXT_AFTER": interview.text_after,
@@ -27,6 +30,8 @@ class Saved(View):
         try:
             interview = InterviewForm(request.POST)
             if interview.is_valid():
+                if Interview.count() >= MAX_STORED_INTERVIEWS:
+                    Interview.first().delete()
                 saved = interview.save()
                 return redirect(f"/share/{saved.pk}/")
             else:

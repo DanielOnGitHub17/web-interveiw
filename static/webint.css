@@ -143,13 +143,13 @@ h2{
     border: none;
     position: fixed;
     top: calc(50vh - 40px);
-    left: calc(50vw - 40px); z-index: 20;
+    left: calc(50vw - 40px);
+    z-index: 20;
     margin: 0;
 }
 #LOADING:before{
     content: var(--content);
     font-size: 0.7em;
-    /* display: flex; */
     text-align: center;
     padding-top: 50%;
     color: white;
@@ -221,12 +221,8 @@ h2{
     color: white;
     border: none;
     border-radius: 0.2em;
-    /* margin-left: 0.5em; */
     width: 1em;
     cursor: pointer;
-    /* transform: scaleX(-1); */
-    /* width: 1em; */
-    /* display: none; */
 }
 #CONTROLS select:active{
     background-color: blue;
@@ -249,12 +245,10 @@ select:active, select:focus{
     border: var(--b);
     border-width: 3px;
     border-radius: 0.8em;
-    /* display: none; */
     flex-flow: row;
     width: 18em;
     max-width: 80vw;
     position: fixed;
-    /* top: 0; */
     left: calc(50% - 9em);
     flex-wrap: wrap;
     z-index: 23;
@@ -298,7 +292,6 @@ body>div{
     flex-flow: column;
     justify-content: center;
     gap: 10px;
-    /* border: 1px solid black; */
 }
 #SETUPDESC{
     display: flex;
@@ -307,9 +300,6 @@ body>div{
     align-items: center;
     border-bottom: var(--b);
 }
-/* #SETUPDESC>span{
-    border-bottom: var(--b);
-} */
 #SETUPDESC>button{
     font-size: 1em;
 }
@@ -357,21 +347,17 @@ h4{
 }
 
 #QUESTIONLIST>li{
-    /* display: flex; */
     flex-flow: row;
-    /* gap: 5px; */
     align-items: center;
     position: relative;
     flex-wrap: nowrap;
     max-width: 100%;
-    /* border-bottom: var(--b); */
 }
 #QUESTIONLIST>li.highlight{
     border: var(--b);
     border-radius: 1em;
 }
 #QUESTIONLIST>li [type="text"]{
-    /* justify-self: flex-start; */
     display: inline-block;
     width: 70%;
 }
@@ -385,7 +371,6 @@ h4{
 #QUESTIONLIST>li button{
     float: right; clear: left;
     outline-color: red;
-    /* display: none; */
 }
 #SHOULDVIDEO, #AISWITCHOLD{
     display: flex;
@@ -445,7 +430,6 @@ h4{
 .searchui{
     display: flex;
     flex-flow: column;
-    /* justify-content: baseline; */
 }
 .searchui>ul{
     width: 50%;
@@ -573,7 +557,6 @@ td:nth-child(1){
     h2{
         border: none;
     }
-    /* style  */
 }
 /* end TEXTRESPONSE SCREEN */
 
