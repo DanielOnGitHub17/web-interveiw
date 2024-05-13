@@ -46,6 +46,12 @@ STARTBUTTON.onclick=()=>{
         }
     })
 }
+// share if and only if saved
+SHARE.onsubmit = (event)=>{
+    event.preventDefault();
+    if (!interviewSaved) return alert("Save interview first before sharing!!!");
+    SHARE.submit();
+}
 
 // video / table download
 SAVE.onclick = ()=>{
@@ -58,9 +64,11 @@ SAVE.onclick = ()=>{
             print();
             switchScreen("VIDRESP");
         }
+        interviewSaved = true;  // assuming user saved it :)
     })
 };
 
+PRINT.addEventListener("click", ()=>interviewSaved = true);
 // add question button
 ADDQUESTION.onclick=()=>(new Question).text.focus();
 
