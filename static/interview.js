@@ -249,7 +249,6 @@ class Interview {
         if (ended) {
             confirm("Do you want to complete your interview?").then(bool => {
                 if (!bool) return;
-                REFRESHER.disabled = false;
                 if (this.useVideo) {
                     say(INTERVIEW.TEXT_AFTER).then(resp => {
                         this.transcribe = false;
@@ -259,7 +258,7 @@ class Interview {
                         this.mediaRecorder.stop();  // Will call videoResponse
                     });
                 }
-                this.textResponse(this.useVideo);
+                REFRESHER.disabled = this.textResponse(this.useVideo);
                 this.makeShare();
             });
             return;
@@ -303,9 +302,13 @@ class Interview {
         let forming = (name, value)=>getS(`#SHARE [name="${name}"]`).value = value;
         forming("questions", jsonStr(INTERVIEW.QUESTIONS));
         TEXT_FIELDS.forEach(field=>{
-            forming(field.toLowerCase(), INTERVIEW[field]);
+            forming(field.toLowerCase(), INTERVIEW[field] || "Not Video");
         });
-        add(SHARE);
+        if (this.useVideo){
+            this.mediaRecorder.addEventListener("dataavailable", ()=>add(SHARE));
+        } else{
+            add(SHARE);
+        }
     }
     rewriteAll() {
         getFromServer(`/ai/rewrite/`, this.questions)
@@ -316,7 +319,7 @@ class Interview {
             }).catch(console.log)
         }).catch(console.log)
     }
-    textResponse(hide = False) {
+    textResponse(hide=False) {
         for (let i = 0; i < INTERVIEW.QUESTIONS.length; i++) {  // proper way to loop??? :)
             let row = add(make("tr"), TEXTRESPONSE);
             ["questions", "answers"].forEach(
@@ -324,6 +327,7 @@ class Interview {
             )
         }
         if (!hide) switchScreen("TXTRESP");
+        return hide;
     }
     videoResponse(event) {
         switchScreen("VIDRESP");
