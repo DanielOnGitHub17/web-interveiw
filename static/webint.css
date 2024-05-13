@@ -124,10 +124,13 @@ h2{
 
 #ERRORS{
     color: darkred;
+    text-align: center;
     font-size: 0.9em;
     margin: 0;
     padding: 0;
     letter-spacing: 0.1em;
+    max-width: 90%;
+    overflow-wrap: break-word;
 }
 #ACCESSORIES{
     display: none;

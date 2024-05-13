@@ -144,7 +144,7 @@ function saveData(){
 function restoreSavedData(){
     // check if interview is a shared page
     if (window.SHARED){
-        INTERVIEW = window.SHARED
+        INTERVIEW = jsonObj(window.SHARED.textContent)
     }else{
         INTERVIEW = local("AI_INTERVIEW") ? jsonObj(local("AI_INTERVIEW")) : {};
     }
@@ -175,5 +175,6 @@ function getVoice(name){
     return speechSynthesis.getVoices().find(i=>i.name == name);
 }
 
-const TEXT_FIELDS = ["TEXT_BEFORE", "TEXT_AFTER"]
-, DONE = true;
+const TEXT_FIELDS = ["TEXT_BEFORE", "TEXT_AFTER"];
+let DONE = true
+, interviewSaved = false;

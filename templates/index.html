@@ -30,10 +30,25 @@
                 <div hidden="hidden">
                     {{ share_form.as_ul }}
                 </div>
-                <button type="submit" id="SAVER">Share</button>
+                <button type="submit" id="SHARER">Share</button>
             </form>
         </div>
-        <p id="ERRORS"></p>
+        <p id="ERRORS">
+            {% if message %}
+                <button id="SHAREINT">Share Interview</button>
+                <script>
+                    (()=>{
+                        let data = {
+                            title: "Shared AI interview",
+                            text: "Access my AI interview through this link: {{ message }}"
+                        }
+                        document.getElementById("SHAREINT").onclick = ()=>
+                        (navigator.canShare(data)) &&  navigator.share(data);
+                    })()
+                </script>
+                {{ request.SHARED|json_script:"SHARED" }}
+            {% endif %}
+        </p>
         <button id="REFRESHER" disabled onclick="location=location">RESTART</button>
         <h2>AI interview</h2>
         <div id="SETUP">
@@ -45,14 +60,14 @@
                 {% csrf_token %}
                 <ul>
                     <li id="TOPICHOLD">
-                        <input id="TOPIC" name="topic" type="text" minlength="25" maxlength="100" placeholder="Enter a topic you want to be quizzed on">
+                        <input id="TOPIC" name="topic" type="text" minlength="20" maxlength="100" placeholder="Enter a topic you want to be quizzed on">
                     </li>
                     <li id="TEXTHOLD">
-                        <textarea id="TEXT" name="text" minlength="200" maxlength="1000" placeholder="input text you want to be interviewed on"></textarea>
+                        <textarea id="TEXT" name="text" minlength="200" maxlength="2000" placeholder="input text you want to be interviewed on"></textarea>
                     </li>
                     <li id="SUBMITHOLD">
                         <label for="QUESTNUMBER">How many questions do you wish to generate: </label>
-                        <input id="QUESTNUMBER" type="number" name="questno" min="8" max="50" required>
+                        <input id="QUESTNUMBER" type="number" name="questno" min="5" max="50" required>
                         <button id="GEN">Generate questions</button>
                     </li>
                     
