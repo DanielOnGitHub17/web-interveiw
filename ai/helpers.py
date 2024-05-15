@@ -65,5 +65,21 @@ def rewrite_all(questions, number):
             ". whereby your return value is a list of lists containing strings, "
             f"and your return value's length is the same as that in {questions}"
         ).text
-        return various[various.find('[') : various.find(']')+1]
+        return various[various.find('[') : various.rfind(']')+1]
     return can_use()
+
+
+#  test returns
+
+            # return HttpResponse(
+            #     json.dumps(
+            #         {"questions": [random() for i in range(number)]}
+            #         )
+            #     )  # testing
+
+
+            # return HttpResponse(
+            #     json.dumps(
+            #         [[random() for i in range(5)] for x in questions]
+            #         )
+            #     )

@@ -2,6 +2,8 @@
 *{
     transition: 0.1s;
     clear: both;
+    outline-color: darkblue;
+    outline-width: 0.1px;
     /* VARIABLES */
     --color: lightblue;
     --b: 1px solid var(--color);
@@ -57,12 +59,21 @@ button:active{
     display: flex;
     align-items: center;
     justify-content: center;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: contain;
 
 }
 .icon:hover, .icon:focus, .icon:active{
     padding: 0;
     border-radius: 1em;
 }
+/* #ADDQUESTION{
+    background-image: url("/static/plus.png");
+}
+#RESTOREQUESTION{
+    background-image: url("/static/undo.png");
+} */
 /* end icon buttons */
 
 /* major buttons */
@@ -361,13 +372,6 @@ h4{
     display: inline-block;
     width: 70%;
 }
-*{
-    --x: #QUESTIONLIST>li span;
-}
---x{
-    display: none;
-    color: red;
-}
 #QUESTIONLIST>li button{
     float: right; clear: left;
     outline-color: red;
@@ -446,7 +450,8 @@ h4{
 }
 .searchui li{
     cursor: pointer;
-    padding: 3px;
+    padding: 5px;
+    border-left: var(--b);
 }
 .searchui li:hover{
     padding: 5px;
@@ -551,7 +556,7 @@ td:nth-child(1){
     border-right: var(--b);
 }
 @media print {
-    #REFRESHER, #PRINT{
+    #REFRESHER, #PRINT, #SHARE, #SHAREINT{
         display: none;
     }
     h2{

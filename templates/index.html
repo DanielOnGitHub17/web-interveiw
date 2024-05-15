@@ -6,9 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI interview</title>
-    <style>
-        @import url("{% static 'webint.css' %}");
-    </style>
+    <link rel="shortcut icon" href="{% static 'aint.png' %}" type="image/png">
+    <link rel="stylesheet" href="{% static 'webint.css' %}">
 </head>
 
 <body>
@@ -35,6 +34,7 @@
         </form>
     </div>
     <p id="ERRORS">
+        {{ request.message }}
         {% if message %}
         <button id="SHAREINT">Share Interview</button>
         <script>
@@ -81,7 +81,7 @@
             <div>
                 <button id="ADDQUESTION" class="icon" title="Click to add a new question (Ctrl+Enter)">+</button>
                 <button id="RESTOREQUESTION" class="icon"
-                    title="Click to restore last deleted question (Ctrl+B)">=</button>
+                    title="Click to restore last deleted question (Ctrl+B)">R</button>
             </div>
         </div>
         <ul id="QUESTIONLIST"></ul>
@@ -138,6 +138,7 @@
     <script src="{% static 'classes.js' %}"></script>
     <script src="{% static 'scripts.js' %}"></script>
     <script src="{% static 'interview.js' %}"></script>
+    <script src="{% static 'extra.js' %}"></script>
     <script src="{% static 'events.js' %}"></script>
 </body>
 

@@ -1,5 +1,6 @@
-from django.http import HttpResponse, Http404, HttpRequest
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.views import View
 import json
 
@@ -7,6 +8,7 @@ from .models import Interview
 Interview = Interview.objects
 from .forms import InterviewForm
 from helpers import handle_error, message_home
+from frontend.views import app_view
 
 MAX_STORED_INTERVIEWS = 25
 
@@ -35,7 +37,9 @@ class Saved(View):
                 saved = interview.save()
                 return redirect(f"/share/{saved.pk}/")
             else:
-                raise Exception(f"Not valid{interview}")
+                request.message = "Invalid interview"
+                return HttpResponseRedirect("/", request)
+    
         except Exception as error:
             handle_error(error)
         return redirect("/")

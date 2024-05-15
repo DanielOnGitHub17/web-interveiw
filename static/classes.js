@@ -4,13 +4,13 @@ class Question{
         this.build();
         this.event();
         Question.questions.push(this);
-    }
+    };
     get question(){
         return this.text.value;
-    }
+    };
     set question(ask){
         this.text.value = ask;
-    }
+    };
     build(){
         add(
             (this.text = make("input"))
@@ -19,22 +19,25 @@ class Question{
         this.text.type = "text";
 
         ["mover", "deleter"].forEach((type, i)=>{
-            add(
+            reclass(add(
                 (this[type] = make("button")), this.box
-            ).className = "icon";
+            ), "icon");
             this[type].textContent = Question.iconValues[i];
         });
         ["box", "text", "mover", "deleter"].forEach(dom=>this[dom].obj=this);
         this.mover.draggable = true;
-    }
+    };
     event(){
-        this.deleter.onclick=()=>this.delete();
+        this.deleter.onclick = ()=>this.delete();
+        // to add a new question
         this.text.onkeyup=(event)=>{
             event.key=="Enter" && event.ctrlKey && (new Question).text.focus();
         }
+        // to prevent scrolling
         this.mover.onkeydown=(event)=>{
             Question.keys.includes(event.key) && event.preventDefault();
         }
+        // to move question box up and down
         this.mover.onkeyup=(event)=>{
             if (Question.keys.includes(event.key) &&
              this.box[`${Question.keyMap[event.key]}ElementSibling`]){
@@ -48,14 +51,14 @@ class Question{
             }
         }
         this.mover.ondragstart=(event)=>{
-            this.box.classList.add("highlight");
+            reclass(this.box, "highlight");
         }
         this.mover.ondragend=(event)=>{
-            let at = document.elementFromPoint(event.x, event.y);
+            let at = domAt(event.x, event.y);
             if (at && at.obj && at.obj != this){
                 QUESTIONLIST.insertBefore(this.box, at.obj.box)
             }
-            this.box.classList.remove("highlight");
+            reclass(this.box, "highlight", 1);
         }
         // this.mover.onmouse
         this.text.onblur=()=>{
@@ -90,22 +93,22 @@ class Switch{
         Switch.swtiches.push(this);
     }
     build(){
-        add((this.switch = make())
+        reclass(add((this.switch = make())
         , add((this.holder = make()), this.container)
-        ).className = "switch";
-        this.holder.className = "switchold";
+        ), "switch");
+        reclass(this.holder, "switchold");
         // this.switch.tabIndex = -1;
     }
     event(){
         this.holder.onclick = (event)=>{
             event.preventDefault();
-            this.holder.classList.contains("off") ?
-            this.holder.classList.remove("off") : this.holder.classList.add("off");
+            hasClass(this.holder, "off") ?
+            reclass(this.holder, "off", 1) : reclass(this.holder, "off");
             this.action();
         }
     }
     get on(){
-        return !this.holder.classList.contains("off");
+        return !hasClass(this.holder, "off");
     }
     action(){
         // all switches will set a property of something
@@ -146,17 +149,23 @@ class SearchUI{
         , add((this.box = make())
         , this.container)).type = "text";
         this.searchBox.placeholder = "Tap to select a voice"
-        this.box.className = "searchui";
+        reclass(this.box, "searchui");
         add((this.list = make("ul")), this.box).hidden = true;
         this.list.size = 20
     }
     event(){
         // change onvoice... to event variable/not
         speechSynthesis.onvoiceschanged=(event)=>{
+            [...this.list.children].forEach(child=>{
+                this.list.removeChild(child);
+            })
             let voices = this.values;
             for (let i in voices){
                 add(make("li"), this.list).textContent = voices[i];
             }
+        }
+        if (isPhone()){
+            speechSynthesis.onvoiceschanged();
         }
         this.searchBox.onfocus=()=>this.list.hidden=false;
         this.searchBox.addEventListener("blur"
@@ -165,7 +174,7 @@ class SearchUI{
             [...this.list.children].forEach(child=>{
                 child.hidden = !(child.textContent.toLowerCase().includes(this.searchBox.value.toLowerCase()));
             });
-            if (this.value){
+            if (this.value && isPhone()){
                 TALK.voice = getVoice(this.value);
             }
         }
@@ -185,7 +194,9 @@ class SearchUI{
     }
     set value(name){
         this.searchBox.value = name;
-        TALK.voice = getVoice(name);
+        if (!isPhone()){
+            TALK.voice = getVoice(name);
+        }
     }
 }
 
@@ -199,7 +210,7 @@ class Modal{
         Modal.modals.push(this);
     }
     build(){
-        add(this.modal = make()).className = "modal";
+        reclass(add(this.modal = make()), "modal");
         add(this.messageBox = make('p'), this.modal);
         this.buttons.forEach((button, pos)=>{
             add(this[button] = make("button"), this.modal).textContent = button;
@@ -231,7 +242,7 @@ class Modal{
         showLoading()
         if (buttons) this.changeButtons(buttons);
         this.messageBox.innerHTML = message;
-        this.modal.classList.add("shown");
+        reclass(this.modal, "shown");
         this[this.buttons[this.buttons.length-1]].focus();
         // promise
         // will be given to the event onclick
@@ -242,11 +253,11 @@ class Modal{
         hideLoading();
     }
     blink(){
-        this.modal.classList.add("blink");
-        setTimeout(()=>this.modal.classList.remove("blink"), 500);
+        reclass(this.modal, "blink");
+        setTimeout(()=>reclass(this.modal, "blink", 1), 500);
     }
     get shown(){
-        return this.modal.classList.contains("shown");
+        return hasClass(this.modal, "shown");
     }
     static get showing(){
         return Modal.modals.some(modal=>modal.shown);

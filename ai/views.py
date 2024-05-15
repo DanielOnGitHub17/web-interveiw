@@ -4,7 +4,7 @@ from django.views import View
 
 # Create your views here.
 import json
-from random import random
+# from random import random
 from .helpers import questions_from_text, questions_from_topic, rewrite_all
 from helpers import handle_error
 
@@ -15,11 +15,6 @@ class QuestionsFrom(View):
         try:
             details = json.loads(request.body)
             number = details["number"]
-            return HttpResponse(
-                json.dumps(
-                    {"questions": [random() for i in range(number)]}
-                    )
-                )  # testing
             if "topic" in details:
                 result = questions_from_topic(details["topic"], number)
             elif "text" in details:
@@ -35,11 +30,6 @@ class QuestionsRewrite(View):
         result = "Failed"
         try:
             questions = json.loads(request.body)
-            return HttpResponse(
-                json.dumps(
-                    [[random() for i in range(5)] for x in questions]
-                    )
-                )
             result = rewrite_all(questions, 5)
         except Exception as error:
             handle_error(error)
